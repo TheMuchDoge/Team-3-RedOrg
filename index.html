@@ -3,9 +3,16 @@
   <head>
     <meta charset="utf-8">
     <title>RedOrg</title>
-    <link href="app.js" class="res">
+    <link href="src/app.js" class="res">
   </head>
   <body>
 
+  <div id="root"></div>
+  <script>
+      require("babel-register");
+      require("./src/app.js");
+  </script>
   </body>
 </html>
+
+<div id="root"></div>

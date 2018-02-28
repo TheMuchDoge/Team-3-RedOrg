@@ -13,4 +13,5 @@ function connect() {
   // Connect to MySQL-server
   connection.connect((error) => {
     if (error) throw error; // If error, show error in console and return from this function
+    console.log('We are connected!');
   });
