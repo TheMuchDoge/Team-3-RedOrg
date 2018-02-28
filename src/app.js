@@ -1,4 +1,11 @@
-return (
+class Login {
+  constructor() {
+    super ();
+
+    this.loginName = [];
+    this.loginPassword = [];
+  }
+}return (
   <div>
     Logg inn:
     <ul>
