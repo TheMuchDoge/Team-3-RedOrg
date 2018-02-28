@@ -9,9 +9,21 @@ function connect() {
     password : 'rb8BFX1X',
     database : 'g_oops_3'
   });
-  
+
   // Connect to MySQL-server
   connection.connect((error) => {
     if (error) throw error; // If error, show error in console and return from this function
     console.log('We are connected!');
   });
+
+  // Add connection error handler
+  connection.on('error', (error) => {
+    if (error.code === 'PROTOCOL_CONNECTION_LOST') { // Reconnect if connection to server is lost
+      connect();
+    }
+    else {
+      throw error;
+    }
+  });
+}
+connect();
