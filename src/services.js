@@ -27,3 +27,13 @@ function connect() {
   });
 }
 connect();
+
+class RedOrgBrukere {
+  finnBruker(callback) {
+    connection.query('SELECT * FROM bruker WHERE id=?', (error, result) => {
+      if (error) throw error;
+
+      callback(result[0]);
+    });
+  }
+}

@@ -5,13 +5,11 @@ class Login {
     this.loginName = [];
     this.loginPassword = [];
   }
-}return (
-  <div>
-    Logg inn:
-    <ul>
-      <li> e-post: <input type='text' ref='loginName' /></li>
-      <li> passord:<input type='text' ref='loginPassword' /></li>
-    </ul>
+  loginUser() {
+    RedOrgBrukere.finnBruker(this.refs.loginName.value, this.refs.loginPassword.value, () => {
+      this.refs.loginName.value = "";
+      this.refs.loginPassword.value = "";
 
-  </div>
-);
+      this.forceUpdate();
+    })
+  }

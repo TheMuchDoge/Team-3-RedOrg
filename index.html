@@ -8,6 +8,18 @@
   <body>
 
   <div id="root"></div>
+
+  Logg inn:
+  <div class="container">
+    <label for="loginName">e-post:</label>
+    <input type="text" placeholder="skriv inn e-post" ref="loginName" required>
+
+    <label for="loginPassword">passord:</label>
+    <input type="text" placeholder="skriv inn passord" ref="loginPassword" required>
+
+    <button type="submit" onclick="loginUser()">logg inn</button>
+  </div>
+
   <script>
       require("babel-register");
       require("./src/app.js");
