@@ -3,6 +3,30 @@ import ReactDOM from 'react-dom';
 import { Link, HashRouter, Switch, Route } from 'react-router-dom';
 import { queries } from './services';
 
+class LoginSkjema extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+
+        return(
+            <div>
+                <span>Epost: <input type="text" placeholder="Epost" ref="epost"></input></span><br/>
+                <span>Passord: <input type="password" placeholder="Passord" ref="passord"></input></span><br/>
+                <button>Login</button>
+            </div>
+        )
+    }
+
+    componentDidMount() {
+        queries.getCustomers((result) => {
+            console.log(result);
+        })
+    }
+
+}
+
+
 
 
 
@@ -14,5 +38,13 @@ import { queries } from './services';
 // means that the path /customer/5 will show the CustomerDetails
 // with props.match.params.customerId set to 5.
 ReactDOM.render((
-  <p>Hello World</p>
+    <HashRouter>
+        <div>
+            <LoginSkjema />
+            <Switch>
+                <Route exact path='/'  />
+            </Switch>
+        </div>
+    </HashRouter>
 ), document.getElementById('root'));
+

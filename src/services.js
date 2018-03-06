@@ -30,14 +30,12 @@ connect();
 
 // Class that performs database queries related to customers
 class queries {
-    allUsers(callback) {
+    getCustomers(callback) {
         connection.query('SELECT * FROM bruker', (error, result) => {
             if (error) throw error;
 
-            console.log(result)
-
-        })
-    };
-
+            callback(result);
+        });
+    }
 }
 export {queries}
