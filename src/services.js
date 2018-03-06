@@ -29,5 +29,15 @@ function connect() {
 connect();
 
 // Class that performs database queries related to customers
+class queries {
+    allUsers(callback) {
+        connection.query('SELECT * FROM bruker', (error, result) => {
+            if (error) throw error;
 
-export {/*class naem here */}
+            console.log(result)
+
+        })
+    };
+
+}
+export {queries}
