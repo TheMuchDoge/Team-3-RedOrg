@@ -13,7 +13,7 @@ function connect() {
   // Connect to MySQL-server
   connection.connect((error) => {
     if (error) throw error; // If error, show error in console and return from this function
-    console.log('We are connected')
+    console.log('We are connected');
   });
 
   // Add connection error handler
@@ -28,37 +28,40 @@ function connect() {
 }
 connect();
 
-class User {
-  id: number;
-  fornavn: string;
-
-}
 // Class that performs database queries related to customers
-class queries {
-    signIn(fornavn: string): Promise<void> {
-      return new Promise((resolve: () => void, reject: (Error) => void) =>{
-        connection.query('SELECT * FROM bruker WHERE fornavn=?', [fornavn], (error: ?Error, result User[]) => {
-            if (error)
-            reject(error);
-            return;
-          }
-          if(result.lenght!=2) {
-            reject(new Error('Brukernavn er for kort'))
-            return;
-          }
+class Queries {
+    loginQuery(epost, passord) {
+        connection.query('SELECT * FROM bruker WHERE epost = ?', [epost], (error, result) => {
+            if (error) throw error;
 
-          localStorage.setItem('signedInUser', JSON.stringify(result[0])); //lager brukerdata i nettleser
-          resolce();
-        });
-      });
+            if (result.length === 1 && passord === result[0].passord) {
+                console.log("You're in...");
+            }
+            else {
+                console.log("HACKER...")
+            }
+
+        })
     }
 
-    getSignedInUser(): ?User {
-      let item: ?string =localStorage.getitem('signedInUser'); //henter brukerdata fra nettleser
-      if(!item) return null;
+    newUserQuery(object) {
+        connection.query('SELECT * FROM bruker WHERE epost = ?', [object.epost], (error, result) =>{
+            if(error) throw error;
 
-      return JSON.parse(item);
+            if(result.length === 1 && object.epost === result[0].epost) {
+                console.log('Already a user there...')
+            }
+            else {
+                connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, address, tlf) VALUES (?,?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.address, object.telefon], (error, result) => {
+                    if (error) throw error;
+                    else {
+                        console.log('Added a new person...')
+                    }
+                })
+            }
+        })
     }
+}
 
-  let queries: queries = new queries();
-export {User, queries}
+let queries = new Queries();
+export {queries}

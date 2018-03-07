@@ -1,71 +1,72 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Link, NavLink, HashRouter, Switch, Route } from 'react-router-dom';
-import createHashHistory from 'history/createHashHistory';
-const history: HashHistory = createHashHistory();
-import { User, queries } from './services';
+import { Link, HashRouter, Switch, Route } from 'react-router-dom';
+import { queries } from './services';
 
-class Menu extends React.Component <{}> {
-  render() {
-    // constructor(props) {
-    //     super(props);
-        let signedInUser: ?User = queries.getSignedInUser();
-        if(signedInUser) {
-          return (
-            <div>
-              <NavLink activeStyle={{color: 'green'}} to='/'>Hjem</NavLink>{' '}
-              <NavLink activeStyle={{color: 'green'}} to={'/user/' + signedInUser.id}>{signedInUser.fornavn}</NavLink>{' '}
-              <NavLink activeStyle={{color: 'green'}} to='/friends'>Friends</NavLink>{' '}
-              <NavLink activeStyle={{color: 'green'}} to='/signout'>Sign Out</NavLink>{' '}
-            </div>
-          );
-        }
+class Skjema extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+
         return (
             <div>
-                <NavLink activeStyle={{ color: 'green'}} to='/login'>Logg inn</NavLink>{' '}
-                <NavLink activeStyle={{ color: 'green'}} to='/signup'>Lag bruker</NavLink>{' '}
+                <div>
+                    <span>Epost: <input type="text" placeholder="Epost" ref="epost" /></span><br/>
+                    <span>Passord: <input type="password" placeholder="Passord" ref="passord"/></span><br/>
+                    <button ref="loginBtn">Login</button>
+                </div>
+                <div>
+                    <span>Epost: <input type="text" placeholder="Epost" ref="epostSign" required /></span><br/>
+                    <span>Etternavn: <input type="text" placeholder="Etternavn" ref="etternavnSign" required/></span><br/>
+                    <span>Fornavn: <input type="text" placeholder="Fornavn" ref="fornavnSign" required/></span><br/>
+                    <span>Passord: <input type="password" placeholder="Passord" ref="passordSign" required/></span><br/>
+                    <span>Addresse: <input type="text" placeholder="Addresse" ref="addresseSign" required/></span><br/>
+                    <span>Telefon: <input type="text" placeholder="Telefon" ref="telefonSign" required/></span><br/>
+                    <button ref="SignUp">Registrer</button>
+                </div>
             </div>
-          );
-        }
 
-        componentDidMount() {
-          menu = this;
-        }
-
-        componentWillUnmount() {
-          menu = null;
-        }
-      }
-
-      let menu: ?Menu;
-
-      class SignIn extends React.Component<{}> {
-        refs: {
-          signInUsername: HTMLInputElement,
-          signInButton: HTMLButtonElement
-        }
-
-        render() {
-          return (
-            <div>
-              Username: <input type='text' ref='signInUsername' />
-              <button ref='signInButton'>Logg inn</button>
-            </div>
-          );
-        }
+        )
+    }
 
     componentDidMount() {
-      if(menu) menu.forceUpdate();
+        this.refs.loginBtn.onclick = () => {
+            queries.loginQuery(this.refs.epost.value, this.refs.passord.value, () => {
+            });
+            this.refs.epost.value = '';
+            this.refs.passord.value = '';
+            this.forceUpdate();
+        }
 
-      this.refs.signInButton.onclick = () => {
-        queries.signIn(this.refs.signInUsername.value).then(() => {
-          history.push('/');
-        }).catch((error: Error) => {
-          if(errorMessage) errorMessage.set("Incorrect username");
-        });
-      };
+        this.refs.SignUp.onclick = () => {
+            let newUser = {
+                epost: this.refs.epostSign.value,
+                etternavn: this.refs.etternavnSign.value,
+                fornavn: this.refs.fornavnSign.value,
+                passord: this.refs.passordSign.value,
+                address: this.refs.addresseSign.value,
+                telefon: this.refs.telefonSign.value
+            };
+            queries.newUserQuery(newUser, () => {
+
+            });
+            this.refs.epostSign.value = '';
+            this.refs.etternavnSign.value = '';
+            this.refs.fornavnSign.value = '';
+            this.refs.passordSign.value = '';
+            this.refs.addresseSign.value = '';
+            this.refs.telefonSign.value = '';
+        }
+
+
     }
-  }
+
+}
+
+
+
 
 
 // The Route-elements define the different pages of the application
@@ -74,22 +75,14 @@ class Menu extends React.Component <{}> {
 // path='/customer/:customerId' component={CustomerDetails}
 // means that the path /customer/5 will show the CustomerDetails
 // with props.match.params.customerId set to 5.
-// let root: ?HTMLElement = document.getElementById('root');
-// if(root) {
-//   ReactDOM.render((
-//     <HashRouter>
-//       <div>
-//         <ErrorMessage />
-//         <Menu />
-//         <Switch>
-//           <Route exact path='/signin' component={SignIn} />
-//           <Route exact path='/signup' component={SignUp} />
-//           <Route exact path='/signout' component={SignOut} />
-//           <Route exact path='/' component={Home} />
-//           <Route exact path='/friends' component={Friends} />
-//           <Route exact path='/user/:id' component={UserDetails} />
-//         </Switch>
-//       </div>
-//     </HashRouter>
-//   ), root);
-// }
+ReactDOM.render((
+    <HashRouter>
+        <div>
+            <Skjema />
+            <Switch>
+                <Route exact path='/'/>
+            </Switch>
+        </div>
+    </HashRouter>
+), document.getElementById('root'));
+
