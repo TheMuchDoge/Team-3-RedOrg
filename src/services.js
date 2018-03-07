@@ -28,14 +28,37 @@ function connect() {
 }
 connect();
 
+class User {
+  id: number;
+  fornavn: string;
+
+}
 // Class that performs database queries related to customers
 class queries {
-    getCustomers(callback) {
-        connection.query('SELECT * FROM bruker', (error, result) => {
-            if (error) throw error;
+    signIn(fornavn: string): Promise<void> {
+      return new Promise((resolve: () => void, reject: (Error) => void) =>{
+        connection.query('SELECT * FROM bruker WHERE fornavn=?', [fornavn], (error: ?Error, result User[]) => {
+            if (error)
+            reject(error);
+            return;
+          }
+          if(result.lenght!=2) {
+            reject(new Error('Brukernavn er for kort'))
+            return;
+          }
 
-            callback(result);
+          localStorage.setItem('signedInUser', JSON.stringify(result[0])); //lager brukerdata i nettleser
+          resolce();
         });
+      });
     }
-}
-export {queries}
+
+    getSignedInUser(): ?User {
+      let item: ?string =localStorage.getitem('signedInUser'); //henter brukerdata fra nettleser
+      if(!item) return null;
+
+      return JSON.parse(item);
+    }
+
+  let queries: queries = new queries();
+export {User, queries}
