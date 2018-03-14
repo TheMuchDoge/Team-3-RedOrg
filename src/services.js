@@ -12,8 +12,7 @@ function connect() {
 
   // Connect to MySQL-server
   connection.connect((error) => {
-    if (error) throw error; // If error, show error in console and return from this function
-    console.log('We are connected');
+    if (error) throw error; // If error, show error in console and return from this functioN
   });
 
   // Add connection error handler
@@ -28,7 +27,7 @@ function connect() {
 }
 connect();
 
-// Class that performs database queries related to customers
+// Class of queries, which will be exported for further use.
 class Queries {
     loginQuery(epost, passord) {
         connection.query('SELECT * FROM bruker WHERE epost = ?', [epost], (error, result) => {
@@ -45,13 +44,15 @@ class Queries {
     }
 
     newUserQuery(object) {
+        // A query to check if a user already exist,
         connection.query('SELECT * FROM bruker WHERE epost = ?', [object.epost], (error, result) =>{
             if(error) throw error;
-
-            if(result.length === 1 && object.epost === result[0].epost) {
+            // If there exists a user with the same email (which is unique), then we log that.-
+            if(result.length >= 1 && object.epost === result[0].epost) {
                 console.log('Already a user there...')
             }
             else {
+                //sends query to add user to database.
                 connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, address, tlf) VALUES (?,?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.address, object.telefon], (error, result) => {
                     if (error) throw error;
                     else {
@@ -60,6 +61,14 @@ class Queries {
                 })
             }
         })
+    }
+
+    searchQuery(input, callback) {
+        connection.query('SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR address = ?', [input, input, input, input], (error, result) =>{
+            if (error) throw error;
+            callback(result);
+            })
+
     }
 }
 
