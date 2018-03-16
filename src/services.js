@@ -17,7 +17,7 @@ function connect() {
 
   // Add connection error handler
   connection.on('error', (error) => {
-    if (error.code === 'PROTOCOL_CONNECTION_LOST') { // Reconnect if connection to server is lost
+    if (error.code === 'PROTOCOL_CONNECTION_LOST' || error.code === 'ETIMEDOUT') { // Reconnect if connection to server is lost
       connect();
     }
     else {
