@@ -1,0 +1,15 @@
+<span>
+                        <input type="text" placeholder="Søk" ref="searchInput"/><button ref="searchButton"><NavLink
+                        activeStyle={{color: 'green'}} to='/searchResult'>Søk</NavLink></button>
+                    </span>
+
+this.refs.searchButton.onclick = () => {
+            if(this.refs.searchInput.value === '') {
+                alert('Vennligst fyll inn noe for å søke');
+            }
+            else {
+                queries.searchQuery(this.refs.searchInput.value, (result) => {
+                    localStorage.setItem('searchResults', JSON.stringify(result));
+                });
+            }
+        }
