@@ -28,16 +28,18 @@ function connect() {
 connect();
 
 // Class of queries, which will be exported for further use.
+
+
 class Queries {
     loginQuery(epost, passord) {
         connection.query('SELECT * FROM bruker WHERE epost = ?', [epost], (error, result) => {
             if (error) throw error;
 
             if (result.length === 1 && passord === result[0].passord) {
-                console.log("You're in...");
+                localStorage.setItem('loggetInnBruker', JSON.stringify(result[0]));
             }
             else {
-                console.log("HACKER...")
+                alert('Epost eller passord er feil.')
             }
 
         })
@@ -70,7 +72,16 @@ class Queries {
             })
 
     }
+
+
+    brukerLoggetInn() {
+        let item = localStorage.getItem('loggetInnBruker'); // Get User-object from browser
+        if(!item) return null;
+
+        return JSON.parse(item);
+    }
+
 }
 
 let queries = new Queries();
-export {queries}
+export { queries}

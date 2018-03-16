@@ -5,7 +5,7 @@ class SearchResult extends React.Component {
     render() {
         let brukere = JSON.parse(localStorage.getItem('searchResults'));
         if (!brukere) {
-            localStorage.removeItem('searchResults');
+
             return (
                 <div>
                     <h1>SearchResults: </h1>
@@ -20,7 +20,7 @@ class SearchResult extends React.Component {
                     <li key={bruker.personID}>{bruker.fornavn} {bruker.etternavn}, {bruker.epost}</li>
                 )
             }
-            localStorage.removeItem('searchResults');
+
             return (
                 <div>
                     <h1>SearchResults: </h1>
@@ -29,11 +29,6 @@ class SearchResult extends React.Component {
             )
 
         }
-
-    }
-
-
-    componentDidMount () {
 
     }
 }
