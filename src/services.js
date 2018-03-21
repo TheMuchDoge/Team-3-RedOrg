@@ -73,7 +73,6 @@ class Queries {
 
     }
 
-
     brukerLoggetInn() {
         let item = localStorage.getItem('loggetInnBruker'); // Get User-object from browser
         if(!item) return null;
@@ -81,6 +80,9 @@ class Queries {
         return JSON.parse(item);
     }
 
+    // brukerLoggetUt() {
+    //   localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
+    // }
 }
 
 let queries = new Queries();

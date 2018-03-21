@@ -19,9 +19,10 @@ class Menu extends React.Component {
                         <NavLink activeStyle={{color: 'green'}} to='/kalender'>Kalender</NavLink>{' '}
                         <NavLink activeStyle={{color: 'green'}} to='/profile'>Profile</NavLink>{' '}
                         <span>
-                        <input type="text" placeholder="Søk" ref="searchInput"/><button ref="searchButton"><NavLink activeStyle={{color: 'green'}} to='/searchResult'>Søk</NavLink></button>
-                    </span>
-                        <NavLink activestyle={{color: 'green'}} exact to="/">Sign out</NavLink>
+                        <input type="text" placeholder="Søk" ref="searchInput"/><button ref="searchButton">
+                        <NavLink activeStyle={{color: 'green'}} to='/searchResult'>Søk</NavLink></button>
+                      </span>
+                        <button ref="logoutButton"><NavLink activestyle={{color: 'green'}} exact to="/brukerLoggetUt">Sign out</NavLink></button>
                     </div>
                 );
             }
@@ -36,13 +37,19 @@ class Menu extends React.Component {
 
     }
 
-    componentDidMount () {
-        this.ref.signout.onclick = () => {
-            localStorage.removeItem('loggetInnBruker');
-            history.push('/login')
-        }
-    }
+  componentDidMount() {
+    this.refs.logoutButton.onclick = () => {
+    localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
+    history.push('/login');
+  }
+}
 
+// componentDidMount () {
+//     this.ref.logoutButton.onclick = () => {
+//         localStorage.removeItem('loggetInnBruker');
+//         history.push('/login')
+//     }
+// }
 
 
 }

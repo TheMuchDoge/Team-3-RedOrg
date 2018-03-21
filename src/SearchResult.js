@@ -17,7 +17,7 @@ class SearchResult extends React.Component {
             let brukerListe = [];
             for (let bruker of brukere) {
                 brukerListe.push(
-                    <li key={bruker.personID}>{bruker.fornavn} {bruker.etternavn}, {bruker.epost}</li>
+                    <li key={bruker.personID}>{bruker.fornavn}, {bruker.etternavn}, {bruker.epost}</li>
                 )
             }
 
