@@ -43,27 +43,61 @@ class Queries {
             }
 
         })
-    }
+      }
 
-    newUserQuery(object) {
+      signOut() {
+          localStorage.removeItem('signedInUser'); // Delete User-object from browser
+        }
+
+
+    newUserQuery(epost: string, etternavn: string,  fornavn: string, passord: string, tlf: string): Promise<void> {
         // A query to check if a user already exist,
         connection.query('SELECT * FROM bruker WHERE epost = ?', [object.epost], (error, result) =>{
             if(error) throw error;
             // If there exists a user with the same email (which is unique), then we log that.-
             if(result.length >= 1 && object.epost === result[0].epost) {
                 console.log('Already a user there...')
-            }
-            else {
+
+            }  else {
+
                 //sends query to add user to database.
-                connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, address, tlf) VALUES (?,?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.address, object.telefon], (error, result) => {
-                    if (error) throw error;
-                    else {
-                        console.log('Added a new person...')
-                    }
-                })
+                //insert into bruker table.
+                return new Promise((resolve, reject) => {
+                connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf) VALUES (?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon], (error, result) => {
+                  if(error) {
+                    reject(error);
+                    return;
+                  }
+                  if(typeof(result.insertId) !== 'number') {
+                    reject(new Error ('could not read insertId'))
+                    return;
+                  }
+
+                  let bruker = new Bruker();
+                  bruker.id = result.insertId
+                  bruker.epost = epost;
+                  bruker.etternavn = etternavn;
+                  bruker.fornavn = fornavn;
+                  bruker. passord = passord;
+                  bruker.tlf = tlf;
+                  localStorage.setItem('loggetInnBruker', JSON.stringify(result[0])); //Store bruker-object in browser
+                  resolve();
+                });
+                //insert into adresse table
+                // let adresse = adresse[i]
+                //   connection.query('INSERT INTO adresse (gateadresse, postnummer, poststed) VALUES (brukerID,?,?,?)', [object.gateadresse, object.postnummer, object.poststed], (error, result) => {
+                //     if (error) throw error;
+                //     else {
+                //         console.log('Added a new person...')
+                //     }
+                // })
+              });
             }
         })
     }
+
+
+
 
     searchQuery(input, callback) {
         connection.query('SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR address = ?', [input, input, input, input], (error, result) =>{

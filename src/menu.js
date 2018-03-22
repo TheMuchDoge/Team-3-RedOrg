@@ -33,25 +33,20 @@ class Menu extends React.Component {
                     <NavLink activestyle={{color: 'green'}} exact to="/signup">Registrer</NavLink>
                 </div>)
             }
+          }
 
-
-    }
-
-  componentDidMount() {
-    this.refs.logoutButton.onclick = () => {
-    localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
-    history.push('/login');
-  }
-}
-
-// componentDidMount () {
-//     this.ref.logoutButton.onclick = () => {
-//         localStorage.removeItem('loggetInnBruker');
-//         history.push('/login')
-//     }
-// }
-
-
+  //       class logUt extends React.Component<{}> {
+  //           render() {
+  //             return (<div />);
+  //           }
+  //
+  //     componentDidMount() {
+  //     this.refs.logoutButton.onclick = () => {
+  //       localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
+  //       history.push('/login');
+  //     }
+  //   }
+  // }
 }
 
 
