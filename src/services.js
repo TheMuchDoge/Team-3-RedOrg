@@ -71,9 +71,15 @@ class Queries {
                     connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf) VALUES (?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon], (error, result) => {
                         if (error) throw error;
                         else {
+                    connection.query('INSERT INTO adresse (gateadresse, postnummer, poststed) VALUES (?,?,?)', [object.gateadresse, object.postnummer, object.poststed], (error, result) => {
+                      if (error) throw error;
+                      else{
+
                             console.log('Added a new person...');
                             localStorage.setItem('loggetInnBruker', JSON.stringify(object));
                             resolve();
+                            }
+                          })
                         }
                     })
                 }

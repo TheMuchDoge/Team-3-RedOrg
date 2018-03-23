@@ -30,7 +30,7 @@ class Login extends React.Component {
 
         this.refs.loginBtn.onclick = () => {
             queries.loginQuery(this.refs.epost.value, this.refs.passord.value).then(() => {
-                history.push('./home');
+                history.push('/home');
             });
             this.refs.epost.value = '';
             this.refs.passord.value = '';

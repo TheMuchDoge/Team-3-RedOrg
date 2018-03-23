@@ -23,7 +23,11 @@ class Menu extends React.Component {
                         <input type="text" placeholder="Søk" ref="searchInput"/><button ref="searchButton">
                         <NavLink activeStyle={{color: 'green'}} to='/searchResult'>Søk</NavLink></button>
                       </span>
-                        <button ref="logoutButton"><NavLink activestyle={{color: 'green'}} exact to="/login">Sign out</NavLink></button>
+                        <button ref="logoutButton" onClick={() => {
+                          localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
+                          history.push('/login');
+                          this.forceUpdate();
+                        }}><NavLink activestyle={{color: 'green'}} exact to="/login">Sign out</NavLink></button>
                     </div>
                 );
             }
@@ -35,15 +39,6 @@ class Menu extends React.Component {
                 </div>)
             }
           }
-
-    componentDidMount() {
-        this.refs.logoutButton.onclick = () => {
-        localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
-        history.push('/login');
-        this.forceUpdate();
-        }
-    }
-
 }
 
 export default Menu;
