@@ -7,6 +7,7 @@ const history = createHashHistory();
 class Menu extends React.Component {
     constructor(props) {
         super(props);
+
     }
 
     render() {
@@ -22,33 +23,27 @@ class Menu extends React.Component {
                         <input type="text" placeholder="Søk" ref="searchInput"/><button ref="searchButton">
                         <NavLink activeStyle={{color: 'green'}} to='/searchResult'>Søk</NavLink></button>
                       </span>
-                        <button ref="logoutButton"><NavLink activestyle={{color: 'green'}} exact to="/brukerLoggetUt">Sign out</NavLink></button>
+                        <button ref="logoutButton"><NavLink activestyle={{color: 'green'}} exact to="/login">Sign out</NavLink></button>
                     </div>
                 );
             }
             else {
                 return(
                 <div>
-                    <NavLink activestyle={{color: 'green'}} exact to="/login">Logg inn</NavLink>
-                    <NavLink activestyle={{color: 'green'}} exact to="/signup">Registrer</NavLink>
+                    <NavLink activestyle={{color: 'green'}} to="/login">Logg inn</NavLink>
+                    <NavLink activestyle={{color: 'green'}} to="/signup">Registrer</NavLink>
                 </div>)
             }
           }
 
-  //       class logUt extends React.Component<{}> {
-  //           render() {
-  //             return (<div />);
-  //           }
-  //
-  //     componentDidMount() {
-  //     this.refs.logoutButton.onclick = () => {
-  //       localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
-  //       history.push('/login');
-  //     }
-  //   }
-  // }
+    componentDidMount() {
+        this.refs.logoutButton.onclick = () => {
+        localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
+        history.push('/login');
+        this.forceUpdate();
+        }
+    }
+
 }
-
-
 
 export default Menu;

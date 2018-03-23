@@ -4,7 +4,7 @@ import {queries} from "./services";
 class Profile extends React.Component  {
     render () {
         let bruker = queries.brukerLoggetInn();
-        console.log(bruker)
+
         return (
             <div>
                 <h1>Profile</h1>

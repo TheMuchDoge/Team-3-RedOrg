@@ -1,4 +1,5 @@
 import React from "react";
+import Menu from './menu';
 import { queries } from './services';
 
 
@@ -28,13 +29,15 @@ class Login extends React.Component {
 
 
         this.refs.loginBtn.onclick = () => {
-            queries.loginQuery(this.refs.epost.value, this.refs.passord.value, () => {});
+            queries.loginQuery(this.refs.epost.value, this.refs.passord.value).then(() => {
+                history.push('./home');
+            });
             this.refs.epost.value = '';
             this.refs.passord.value = '';
-            history.push('/home');
 
         }
     }
 
 }
+
 export default Login;
