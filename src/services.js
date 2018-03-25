@@ -63,23 +63,51 @@ class Queries {
                 }
                 // If there exists a user with the same email (which is unique), then we log that.-
                 if (result.length >= 1 && object.epost === result[0].epost) {
-                    console.log('Already a user there...');
+                    alert('Eposten er allerede i bruk.');
                     reject();
+                    console.log(result);
                 }
-                else {
-                    //sends query to add user to database.
-                    connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf) VALUES (?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon], (error, result) => {
-                        if (error) throw error;
-                        else {
-                    connection.query('INSERT INTO adresse (gateadresse, postnummer, poststed) VALUES (?,?,?)', [object.gateadresse, object.postnummer, object.poststed], (error, result) => {
-                      if (error) throw error;
-                      else{
 
-                            console.log('Added a new person...');
-                            localStorage.setItem('loggetInnBruker', JSON.stringify(object));
-                            resolve();
-                            }
-                          })
+                else {
+                    //checks if poststed and postnr is in postkoder table, if it is then we use it to make a new user.
+                    connection.query('SELECT * FROM postkode WHERE postSted = ? AND postNr = ?)', [object.poststed, object.postnummer], (error, result) => {
+                        if(error) {
+                            reject(error);
+                            return;
+                        }
+                        // If there is a postcode and place name, we use it in a query
+                        if (result.length > 0) {
+                            console.log(result);
+                            let addresseID = result[0].postkodeID;
+                            connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf, addresse, postkodeID) VALUES (?,?,?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.addresse, addresseID], (error, result) => {
+                                if(error) {
+                                    reject(error);
+                                    return;
+                                }
+                                console.log(result);
+                            })
+                        }
+                        else { // If not, then we make postkode with the user input.
+                            console.log(result);
+                            // Adding new postkode.
+                            connection.query('INSERT INTO postkoder (postSted, postNr) VALUES (?,?);', [object.poststed, object.postnummer], (error, result) => {
+                                if (error) {
+                                    reject(error);
+                                    return;
+                                }
+                                else {
+                                    // Make user with new postkode.
+                                    console.log(result);
+                                    let nyAddresseID = result[0].postkodeID;
+                                    connection.query('INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf, addresse, postkodeID) VALUES (?,?,?,?,?,?,?)', [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.addresse, nyAddresseID], (error, result) => {
+                                        if (error) {
+                                            reject(error);
+                                            return;
+                                        }
+                                        console.log(result);
+                                    })
+                                }
+                            })
                         }
                     })
                 }
