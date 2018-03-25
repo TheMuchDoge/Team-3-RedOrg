@@ -61,18 +61,17 @@ class Skjema extends React.Component {
         telefon: this.refs.telefonSign.value
       };
       queries.newUserQuery(newUser).then(() => {
-          this.refs.epostSign.value = "";
-          this.refs.etternavnSign.value = "";
-          this.refs.fornavnSign.value = "";
-          this.refs.passordSign.value = "";
-          this.refs.postnrSign.value = "";
-          this.refs.poststedSign.value = "";
-          this.refs.telefonSign.value = "";
-          this.refs.adresseSign.value = "";
-        localStorage.setItem("loggetInnBruker",JSON.stringify(newUser));
+        this.refs.epostSign.value = "";
+        this.refs.etternavnSign.value = "";
+        this.refs.fornavnSign.value = "";
+        this.refs.passordSign.value = "";
+        this.refs.postnrSign.value = "";
+        this.refs.poststedSign.value = "";
+        this.refs.telefonSign.value = "";
+        this.refs.adresseSign.value = "";
+        localStorage.setItem("loggetInnBruker", JSON.stringify(newUser));
         history.push("./home");
       });
-
     };
   }
 }

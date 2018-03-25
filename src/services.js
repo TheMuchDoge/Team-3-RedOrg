@@ -115,10 +115,12 @@ class Queries {
     });
   }
 
-  searchQuery(input, callback) {
-    connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR address = ?", [input, input, input, input], (error, result) => {
-      if (error) throw error;
-      callback(result);
+  searchQuery() {
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adress = ?", [input, input, input, input], (error, result) => {
+        if (error) reject(error);
+        return;
+      });
     });
   }
 
