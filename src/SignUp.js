@@ -32,7 +32,7 @@ class Skjema extends React.Component {
         </span>
         <br />
         <span>
-          Postnummer: <input type="text" placeholder="Postnummer" ref="postnrSign" required />
+          Postnummer: <input type="number" placeholder="Postnummer" ref="postnrSign" required />
         </span>
         <br />
         <span>
@@ -61,18 +61,18 @@ class Skjema extends React.Component {
         telefon: this.refs.telefonSign.value
       };
       queries.newUserQuery(newUser).then(() => {
-        localStorage.setItem("loggetInnbruker", newUser);
-        console.log(localStorage);
+          this.refs.epostSign.value = "";
+          this.refs.etternavnSign.value = "";
+          this.refs.fornavnSign.value = "";
+          this.refs.passordSign.value = "";
+          this.refs.postnrSign.value = "";
+          this.refs.poststedSign.value = "";
+          this.refs.telefonSign.value = "";
+          this.refs.adresseSign.value = "";
+        localStorage.setItem("loggetInnBruker",JSON.stringify(newUser));
         history.push("./home");
       });
-      this.refs.epostSign.value = "";
-      this.refs.etternavnSign.value = "";
-      this.refs.fornavnSign.value = "";
-      this.refs.passordSign.value = "";
-      this.refs.postnrSign.value = "";
-      this.refs.poststedSign.value = "";
-      this.refs.telefonSign.value = "";
-      this.refs.adresseSign.value = "";
+
     };
   }
 }

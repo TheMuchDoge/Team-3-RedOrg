@@ -71,7 +71,7 @@ class Queries {
             }
             // If there is a postcode and place name, we use it in a query
             if (result.length > 0) {
-              let addresseID = result[0].postkodeID;
+              let adresseID = result[0].postkodeID;
               connection.query(
                 "INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf, adresse, postkodeID) VALUES (?,?,?,?,?,?,?)",
                 [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, adresseID],
