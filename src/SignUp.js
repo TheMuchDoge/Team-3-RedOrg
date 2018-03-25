@@ -61,8 +61,9 @@ class Skjema extends React.Component {
         telefon: this.refs.telefonSign.value
       };
       queries.newUserQuery(newUser).then(() => {
-        localStorage.setItem("loggetInnbruker");
-        history.push("/home");
+        localStorage.setItem("loggetInnbruker", newUser);
+        console.log(localStorage);
+        history.push("./home");
       });
       this.refs.epostSign.value = "";
       this.refs.etternavnSign.value = "";
