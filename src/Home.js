@@ -1,17 +1,13 @@
 import React from "react";
 
 class Home extends React.Component {
-    render() {
-
-        return (
-            <div>
-                <h1>RedOrg</h1>
-            </div>
-        )
-    }
-
-
-
+  render() {
+    return (
+      <div>
+        <h1>RedOrg</h1>
+      </div>
+    );
+  }
 }
 
 export default Home;
