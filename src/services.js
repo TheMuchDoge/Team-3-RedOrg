@@ -74,7 +74,7 @@ class Queries {
               let addresseID = result[0].postkodeID;
               connection.query(
                 "INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf, adresse, postkodeID) VALUES (?,?,?,?,?,?,?)",
-                [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.addresse, addresseID],
+                [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, adresseID],
                 (error, result) => {
                   if (error) {
                     reject(error);
@@ -93,10 +93,10 @@ class Queries {
                   reject(error);
                 } else {
                   // Make user with new postkode.
-                  let nyAddresseID = result.insertId;
+                  let nyAdresseID = result.insertId;
                   connection.query(
                     "INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf, adresse, postkodeID) VALUES (?,?,?,?,?,?,?)",
-                    [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.addresse, nyAddresseID],
+                    [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, nyAdresseID],
                     (error, result) => {
                       if (error) {
                         reject(error);

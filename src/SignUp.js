@@ -28,7 +28,7 @@ class Skjema extends React.Component {
         </span>
         <br />
         <span>
-          Addresse: <input type="text" placeholder="Addresse" ref="addresseSign" required />
+          Adresse: <input type="text" placeholder="Adresse" ref="adresseSign" required />
         </span>
         <br />
         <span>
@@ -55,7 +55,7 @@ class Skjema extends React.Component {
         etternavn: this.refs.etternavnSign.value,
         fornavn: this.refs.fornavnSign.value,
         passord: this.refs.passordSign.value,
-        addresse: this.refs.addresseSign.value,
+        adresse: this.refs.adresseSign.value,
         postnummer: this.refs.postnrSign.value,
         poststed: this.refs.poststedSign.value,
         telefon: this.refs.telefonSign.value
@@ -72,7 +72,7 @@ class Skjema extends React.Component {
       this.refs.postnrSign.value = "";
       this.refs.poststedSign.value = "";
       this.refs.telefonSign.value = "";
-      this.refs.addresseSign.value = "";
+      this.refs.adresseSign.value = "";
     };
   }
 }
