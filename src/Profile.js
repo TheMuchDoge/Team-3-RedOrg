@@ -1,5 +1,8 @@
 import React from "react";
+import {NavLink} from 'react-router-dom';
 import {queries} from "./services";
+import createHashHistory from "history/createHashHistory";
+const history = createHashHistory();
 
 class Profile extends React.Component  {
     render () {
@@ -12,9 +15,10 @@ class Profile extends React.Component  {
                     <li>Navn: {bruker.fornavn} {bruker.etternavn}</li>
                     <li>Epost: {bruker.epost}</li>
                     <li>Telefon: {bruker.tlf}</li>
-                    <li>Address: {bruker.address}</li>
+                    <li>Adresse: {bruker.adresse}</li>
 
                 </ul>
+                <NavLink activeStyle={{color: 'green'}} to='/profileUpdate'>Rediger</NavLink>{' '}
             </div>
         )
     }
