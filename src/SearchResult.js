@@ -2,7 +2,7 @@ import React from "react";
 
 class SearchResult extends React.Component {
   render() {
-    let brukere = JSON.parse(localStorage.getItem("searchInput"));
+    let brukere = JSON.parse(localStorage.getItem("searchResults"));
     if (!brukere) {
       return (
         <div>

@@ -9,6 +9,7 @@ import SearchResult from "./SearchResult";
 import Kalender from "./Kalender";
 import Home from "./Home";
 import Skjema from "./SignUp";
+import profileUpdate from "./profileUpdate";
 
 // The Route-elements define the different pages of the application
 // through a path and which component should be used for the path.
@@ -28,6 +29,7 @@ ReactDOM.render(
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/searchResult" component={SearchResult} />
         <Route exact path="/kalender" component={Kalender} />
+        <Route exact path="/profileUpdate" component={profileUpdate} />
       </Switch>
     </div>
   </HashRouter>,
