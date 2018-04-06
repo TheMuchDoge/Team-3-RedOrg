@@ -39,8 +39,14 @@ class Queries {
         }
 
         if (result.length === 1 && passord === result[0].passord) {
-          localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
-          resolve();
+            if (result[0].adminStat) {
+                localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
+                resolve();
+            }
+            else {
+                localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
+                resolve();
+            }
         } else {
           alert("Epost eller passord er feil.");
           reject();
@@ -70,7 +76,6 @@ class Queries {
               return;
             }
             // If there is a postcode and place name, we use it in a query
-
             if (result.length > 0) {
               let adresseID = result[0].postkodeID;
               connection.query(
@@ -116,86 +121,17 @@ class Queries {
     });
   }
 
-  updateQuery(object) {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=? WHERE id=?",
-        [object.etteravn, object.fornavn, object.epost, object.passord, object.telefon, object.adresse, object.id],
-        (error, result) => {
-          if (error) {
-            console.log(error);
-            reject(error);
-            return;
-          }
-          // if (result.affectedRows != 1) {
-          //   reject(new Error("affectedRows was not 1"));
-          //   return;
-          // }
-          resolve(result);
-        }
-      );
-    });
-  }
+  searchQuery(input) {
+    return new Promise ((resolve, reject) => {
+        connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ?", [input, input, input, input], (error, result) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            resolve(result);
+        });
+    })
 
-  //   //checks if poststed and postnr is in postkoder table, if it is then we use it to make a new user.
-  //   connection.query("SELECT * FROM postkode WHERE postSted = ? AND postNr = ?", [object.poststed, object.postnummer], (error, result) => {
-  //     if (error) {
-  //       reject(error);
-  //       return;
-  //     }
-  //     // If there is a postcode and place name, we use it in a query
-  //
-  //     if (result.length > 0) {
-  //       let adresseID = result[0].postkodeID;
-  //       connection.query(
-  //         "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
-  //         [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, adresseID],
-  //         (error, result) => {
-  //           if (error) {
-  //             reject(error);
-  //             return;
-  //           } else {
-  //             resolve();
-  //           }
-  //         }
-  //       );
-  //     } else {
-  //       // If not, then we make postkode with the user input.
-  //       console.log(result);
-  //       // Adding new postkode.
-  //       connection.query("INSERT INTO postkode (postSted, postNr) VALUES (?,?)", [object.poststed, object.postnummer], (error, result) => {
-  //         if (error) {
-  //           reject(error);
-  //         } else {
-  //           console.log(result);
-  //           // update user with new postkode.
-  //           let nyAdresseID = result.insertId;
-  //           connection.query(
-  //             "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
-  //             [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse],
-  //             (error, result) => {
-  //               if (error) {
-  //                 reject(error);
-  //                 return;
-  //               } else console.log(result);
-  //               {
-  //                 resolve();
-  //               }
-  //             }
-  //           );
-  //         }
-  //       });
-  //     }
-  //   });
-  // };
-
-  searchQuery() {
-    return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adress = ?", [input, input, input, input], (error, result) => {
-        if (error) reject(error);
-        return;
-      });
-    });
   }
 
   brukerLoggetInn() {
@@ -205,10 +141,113 @@ class Queries {
     return JSON.parse(item);
   }
 
-  // brukerLoggetUt() {
-  //   localStorage.removeItem('loggetInnBruker'); // Delete User-object from browser
-  // }
+  hentIkkeGodkjenteBrukere() {
+      return new Promise((resolve, reject) => {
+          connection.query("SELECT * FROM bruker WHERE brukerGodkjent = 0", (error, result) => {
+              if (error) {
+                  reject(error);
+                  return;
+              }
+              resolve(result);
+          })
+      })
+  }
+
+    updateQuery(object) {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=? WHERE brukerID=?",
+                [object.etternavn, object.fornavn, object.epost, object.passord, object.telefon, object.adresse, object.id],
+                (error, result) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+
+                    resolve(result);
+                }
+            );
+        });
+    }
+
+    hentBruker(id) {
+      return new Promise((resolve, reject) => {
+          connection.query(
+              "SELECT * FROM bruker WHERE brukerID = ?", [id], (error, result) => {
+                  if (error) {
+                      reject(error);
+                      return;
+                  }
+
+                  resolve(result);
+              }
+          )
+      })
+    }
+
+
 }
 
+class EventQueries {
+  hentEvents() {
+    return new Promise ((resolve, reject) => {
+        connection.query("SELECT * FROM events WHERE eventGodkjent = 1", (error, result) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            resolve(result);
+        });
+    })
+  }
+
+  hentIkkeGodkjentEvents() {
+      return new Promise((resolve, reject) => {
+          connection.query("SELECT * FROM events WHERE eventGodkjent = 0", (error, result) => {
+              if (error) {
+                  reject(error);
+                  return;
+              }
+              resolve(result);
+          })
+      })
+  }
+
+  godkjenning(eventID,table, bool) {
+      return new Promise ((resolve, reject) => {
+          // If bool (which stands for add or not, where true is add, then do if
+          if (bool) {
+              //If the table is event then do this
+              if(table === event) {
+                  connection.query("UPDATE events SET eventGodkjent = 1 WHERE eventID = ?", [eventID], (error, result) => {
+                      if (error) {
+                          reject(error);
+                          return;
+                      }
+                      resolve();
+                  })
+              }
+              //Else the table must be bruker, so we add it to godkjent.
+              else{
+                  connection.query("UPDATE bruker SET brukerGodkjent = 1 WHERE brukerID = ?", [eventID], (error, result) => {
+                      if (error) {
+                          reject(error);
+                          return;
+                      }
+                      resolve();
+                  })
+              }
+          }
+          else {
+              // it not true, then it send it back
+              resolve();
+          }
+      })
+  }
+}
+
+
+
 let queries = new Queries();
-export { queries };
+let eventQueries = new EventQueries();
+export { eventQueries, queries };

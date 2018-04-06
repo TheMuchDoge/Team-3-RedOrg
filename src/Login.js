@@ -23,12 +23,12 @@ class Login extends React.Component {
         <br />
         <button ref="loginBtn">Login</button>
       </div>
-    );
+    );b
   }
 
   componentDidMount() {
     this.refs.loginBtn.onclick = () => {
-      queries.loginQuery(this.refs.epost.value, this.refs.passord.value).then(() => {
+      queries.loginQuery(this.refs.epost.value  , this.refs.passord.value).then(() => {
         history.push("/home");
       });
       this.refs.epost.value = "";

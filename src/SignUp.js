@@ -51,27 +51,28 @@ class Skjema extends React.Component {
   componentDidMount() {
     this.refs.SignUp.onclick = () => {
       let newUser = {
-        epost: this.refs.epostSign.value,
-        etternavn: this.refs.etternavnSign.value,
-        fornavn: this.refs.fornavnSign.value,
+        epost: this.refs.epostSign.value.toLowerCase(),
+        etternavn: this.refs.etternavnSign.value.toLowerCase(),
+        fornavn: this.refs.fornavnSign.value.toLowerCase(),
         passord: this.refs.passordSign.value,
-        adresse: this.refs.adresseSign.value,
-        postnummer: this.refs.postnrSign.value,
-        poststed: this.refs.poststedSign.value,
-        telefon: this.refs.telefonSign.value
+        adresse: this.refs.adresseSign.value.toLowerCase(),
+        postnummer: this.refs.postnrSign.value.toLowerCase(),
+        poststed: this.refs.poststedSign.value.toLowerCase(),
+        telefon: this.refs.telefonSign.value.toLowerCase()
       };
       queries.newUserQuery(newUser).then(() => {
-        this.refs.epostSign.value = "";
-        this.refs.etternavnSign.value = "";
-        this.refs.fornavnSign.value = "";
-        this.refs.passordSign.value = "";
-        this.refs.postnrSign.value = "";
-        this.refs.poststedSign.value = "";
-        this.refs.telefonSign.value = "";
-        this.refs.adresseSign.value = "";
-        localStorage.setItem("loggetInnBruker", JSON.stringify(newUser));
+          this.refs.epostSign.value = "";
+          this.refs.etternavnSign.value = "";
+          this.refs.fornavnSign.value = "";
+          this.refs.passordSign.value = "";
+          this.refs.postnrSign.value = "";
+          this.refs.poststedSign.value = "";
+          this.refs.telefonSign.value = "";
+          this.refs.adresseSign.value = "";
+        localStorage.setItem("loggetInnBruker",JSON.stringify(newUser));
         history.push("./home");
       });
+
     };
   }
 }

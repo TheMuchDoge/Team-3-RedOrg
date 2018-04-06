@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Link, HashRouter, Switch, Route } from "react-router-dom";
 
+
+
 import Login from "./Login";
 import Profile from "./profile";
 import Menu from "./menu";
@@ -9,6 +11,7 @@ import SearchResult from "./SearchResult";
 import Kalender from "./Kalender";
 import Home from "./Home";
 import Skjema from "./SignUp";
+import AdminSite from './adminSite';
 import profileUpdate from "./profileUpdate";
 
 // The Route-elements define the different pages of the application
@@ -27,9 +30,10 @@ ReactDOM.render(
         <Route exact path="/signup" component={Skjema} />
         <Route exact path="/home" component={Home} />
         <Route exact path="/profile" component={Profile} />
-        <Route exact path="/searchResult" component={SearchResult} />
+        <Route exact path="/searchResult/:searchInput" component={SearchResult} />
         <Route exact path="/kalender" component={Kalender} />
-        <Route exact path="/profileUpdate" component={profileUpdate} />
+        <Route exact path="/adminSite" component={AdminSite} />
+          <Route exact path="/profileUpdate/:brukerID" component={profileUpdate} />
       </Switch>
     </div>
   </HashRouter>,

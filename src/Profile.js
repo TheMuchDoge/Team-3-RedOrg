@@ -18,7 +18,7 @@ class Profile extends React.Component  {
                     <li>Adresse: {bruker.adresse}</li>
 
                 </ul>
-                <NavLink activeStyle={{color: 'green'}} to='/profileUpdate'>Rediger</NavLink>{' '}
+                <NavLink activeStyle={{color: 'green'}} to={'/profileUpdate/' + bruker.brukerID}>Rediger</NavLink>{' '}
             </div>
         )
     }
