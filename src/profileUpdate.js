@@ -3,11 +3,52 @@ import { queries } from "./services";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
 
-class profileUpdate extends React.Component {
+class ErrorMessage extends React.Component {
   constructor() {
-      super();
+    super();
 
-      this.rediger = [];
+    this.message = '';
+  }
+
+  render() {
+    // Only show when this.message is not empty
+    let displayValue;
+    if(this.message=='') displayValue = 'none';
+    else displayValue = 'inline';
+
+    return (
+      <div style={{display: displayValue}}>
+        <b><font color='red'>{this.message}</font></b>
+        <button ref='closeButton'>Close</button>
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    errorMessage = this;
+    this.refs.closeButton.onclick = () => {
+      this.message = '';
+      this.forceUpdate();
+    };
+  }
+
+  componentWillUnmount() {
+    errorMessage = null;
+  }
+
+  set(message) {
+    this.message = message;
+    this.forceUpdate();
+  }
+}
+let errorMessage;
+
+class profileUpdate extends React.Component {
+  constructor(props) {
+      super(props);
+
+      this.id = props.match.params.id;
+      this.user = {};
   }
 
   render() {
@@ -50,16 +91,17 @@ class profileUpdate extends React.Component {
     );
   }
 
+
 update() {
-  queries.updateQuery(this.id).then((rediger) => {
-    this.refs.epostSign.value = rediger.epostSign;
-    this.refs.etternavnSign.value = rediger.etternavnSign;
-    this.refs.fornavnSign.value = rediger.fornavnSign;
-    this.refs.passordSign.value = rediger.passordSign;
-    this.refs.adresseSign.value = rediger.adresseSign;
-    this.refs.postnrSign.value = rediger.postnrSign;
-    this.refs.poststedSign.value = rediger.poststedSign;
-    this.refs.telefonSign.value = rediger.telefonSign;
+  queries.updateQuery(this.user).then((user) => {
+    this.refs.epostSign.value = user.epostSign;
+    this.refs.etternavnSign.value = user.etternavnSign;
+    this.refs.fornavnSign.value = user.fornavnSign;
+    this.refs.passordSign.value = user.passordSign;
+    this.refs.adresseSign.value = user.adresseSign;
+    this.refs.postnrSign.value = user.postnrSign;
+    this.refs.poststedSign.value = user.poststedSign;
+    this.refs.telefonSign.value = user.telefonSign;
   }).catch((error) => {
     if(errorMessage) errorMessage.set('Error editing profile: ' + error.message);
   });
@@ -67,20 +109,37 @@ update() {
 
 componentDidMount() {
   this.refs.saveInfo.onclick = () => {
-    queries.updateQuery(
-      this.id, this.refs.epostSign.valie, this.refs.etternavnSign.value, this.refs.fornavnSign.value, this.refs.passordSign.value,
-      this.refs.adresseSign.value, this.refs.postnrSign.value, this.refs.poststedSign.value, this.refs.telefonSign.value).then(() =>{
+    console.log("noe skjedde");
+    queries.updateQuery({
+      epost: this.refs.epostSign.value,
+      etternavn: this.refs.etternavnSign.value,
+      fornavn: this.refs.fornavnSign.value,
+      passord: this.refs.passordSign.value,
+      adresse: this.refs.adresseSign.value,
+      postnr: this.refs.postnrSign.value,
+      poststed: this.refs.poststedSign.value,
+      tlf: this.refs.telefonSign.value
+      }).then(() =>{
         if(profileUpdate) profileUpdate.update();
       }).catch((error) => {
         if(errorMessage) errorMessage.set('error editing profile:' + error.message);
       });
     }
 
-
-
     this.update();
-  }
 }
+
+  // queries.updateQuery(this.id).then(() => {
+  //   this.refs.epostSign.value = "";
+  //   this.refs.etternavnSign.value = "";
+  //   this.refs.fornavnSign.value = "";
+  //   this.refs.passordSign.value = "";
+  //   this.refs.postnrSign.value = "";
+  //   this.refs.poststedSign.value = "";
+  //   this.refs.telefonSign.value = "";
+  //   this.refs.adresseSign.value = "";
+  // });
+};
 
 
 export default profileUpdate;

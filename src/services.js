@@ -118,6 +118,7 @@ class Queries {
   }
 
   updateQuery(object) {
+    console.log(object);
     // A query to check if a user already exist,
     return new Promise((resolve, reject) => {
       connection.query("SELECT * FROM bruker WHERE epost = ?", [object.epost], (error, result) => {
@@ -139,10 +140,11 @@ class Queries {
               return;
             }
             // If there is a postcode and place name, we use it in a query
+
             if (result.length > 0) {
               let adresseID = result[0].postkodeID;
               connection.query(
-                "INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf, adresse, postkodeID) VALUES (?,?,?,?,?,?,?)",
+                "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
                 [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, adresseID],
                 (error, result) => {
                   if (error) {
@@ -157,20 +159,25 @@ class Queries {
               // If not, then we make postkode with the user input.
               console.log(result);
               // Adding new postkode.
-              connection.query("INSERT INTO postkode (postSted, postNr) VALUES (?,?);", [object.poststed, object.postnummer], (error, result) => {
+              connection.query("INSERT INTO postkode (postSted, postNr) VALUES (?,?)",
+              [object.poststed, object.postnummer],
+              (error, result) => {
                 if (error) {
                   reject(error);
                 } else {
-                  // Make user with new postkode.
+                  console.log(result);
+                  // update user with new postkode.
                   let nyAdresseID = result.insertId;
                   connection.query(
-                    "INSERT INTO bruker (epost, etternavn, fornavn, passord, tlf, adresse, postkodeID) VALUES (?,?,?,?,?,?,?)",
-                    [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, nyAdresseID],
+                    "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
+                    [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse],
                     (error, result) => {
                       if (error) {
                         reject(error);
                         return;
-                      } else {
+                      } else
+                      console.log(result);
+                      {
                         resolve();
                       }
                     }

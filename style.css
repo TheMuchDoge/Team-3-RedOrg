@@ -117,3 +117,7 @@ header nav{
   height: 60px;
   background-color: #fff;
 }
+
+nav{
+  color: green;
+}
