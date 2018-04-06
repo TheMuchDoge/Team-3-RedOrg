@@ -7,19 +7,21 @@ class ErrorMessage extends React.Component {
   constructor() {
     super();
 
-    this.message = '';
+    this.message = "";
   }
 
   render() {
     // Only show when this.message is not empty
     let displayValue;
-    if(this.message=='') displayValue = 'none';
-    else displayValue = 'inline';
+    if (this.message == "") displayValue = "none";
+    else displayValue = "inline";
 
     return (
-      <div style={{display: displayValue}}>
-        <b><font color='red'>{this.message}</font></b>
-        <button ref='closeButton'>Close</button>
+      <div style={{ display: displayValue }}>
+        <b>
+          <font color="red">{this.message}</font>
+        </b>
+        <button ref="closeButton">Close</button>
       </div>
     );
   }
@@ -27,7 +29,7 @@ class ErrorMessage extends React.Component {
   componentDidMount() {
     errorMessage = this;
     this.refs.closeButton.onclick = () => {
-      this.message = '';
+      this.message = "";
       this.forceUpdate();
     };
   }
@@ -45,45 +47,45 @@ let errorMessage;
 
 class profileUpdate extends React.Component {
   constructor(props) {
-      super(props);
+    super(props);
 
-      this.id = props.match.params.id;
-      this.user = {};
+    this.id = props.match.params.id;
+    this.user = {};
   }
 
   render() {
     return (
       <div>
         <span>
-        Epost: <input type="text" ref="epostSign" />
+          Epost: <input type="text" ref="epostSign" />
         </span>
         <br />
         <span>
-        Etternavn: <input type="text" ref="etternavnSign" />
+          Etternavn: <input type="text" ref="etternavnSign" />
         </span>
         <br />
         <span>
-        Fornavn: <input type="text" ref="fornavnSign" />
+          Fornavn: <input type="text" ref="fornavnSign" />
         </span>
         <br />
         <span>
-        Passord: <input type="password" ref="passordSign" />
+          Passord: <input type="password" ref="passordSign" />
         </span>
         <br />
         <span>
-        Adresse: <input type="text" ref="adresseSign" />
+          Adresse: <input type="text" ref="adresseSign" />
         </span>
         <br />
         <span>
-        Postnummer: <input type='text' ref="postnrSign" />
+          Postnummer: <input type="text" ref="postnrSign" />
         </span>
         <br />
         <span>
-        Poststed: <input type='text' ref="poststedSign" />
+          Poststed: <input type="text" ref="poststedSign" />
         </span>
         <br />
         <span>
-        Telefon: <input type="text" ref="telefonSign" />
+          Telefon: <input type="text" ref="telefonSign" />
         </span>
         <br />
         <button ref="saveInfo">Endre</button>
@@ -91,44 +93,59 @@ class profileUpdate extends React.Component {
     );
   }
 
+  componentDidMount() {
+    let bruker = queries.brukerLoggetInn();
+    let postkode = queries.brukerLoggetInn();
+    let id = queries.brukerLoggetInn();
 
-update() {
-  queries.updateQuery(this.user).then((user) => {
-    this.refs.epostSign.value = user.epostSign;
-    this.refs.etternavnSign.value = user.etternavnSign;
-    this.refs.fornavnSign.value = user.fornavnSign;
-    this.refs.passordSign.value = user.passordSign;
-    this.refs.adresseSign.value = user.adresseSign;
-    this.refs.postnrSign.value = user.postnrSign;
-    this.refs.poststedSign.value = user.poststedSign;
-    this.refs.telefonSign.value = user.telefonSign;
-  }).catch((error) => {
-    if(errorMessage) errorMessage.set('Error editing profile: ' + error.message);
-  });
-}
+    this.refs.epostSign.value = bruker.epost;
+    this.refs.etternavnSign.value = bruker.etternavn;
+    this.refs.fornavnSign.value = bruker.fornavn;
+    this.refs.passordSign.value = bruker.passord;
+    this.refs.adresseSign.value = bruker.adresse;
+    this.refs.postnrSign.value = postkode.postNr;
+    this.refs.poststedSign.value = postkode.postSted;
+    this.refs.telefonSign.value = bruker.tlf;
 
-componentDidMount() {
-  this.refs.saveInfo.onclick = () => {
-    console.log("noe skjedde");
-    queries.updateQuery({
-      epost: this.refs.epostSign.value,
-      etternavn: this.refs.etternavnSign.value,
-      fornavn: this.refs.fornavnSign.value,
-      passord: this.refs.passordSign.value,
-      adresse: this.refs.adresseSign.value,
-      postnr: this.refs.postnrSign.value,
-      poststed: this.refs.poststedSign.value,
-      tlf: this.refs.telefonSign.value
-      }).then(() =>{
-        if(profileUpdate) profileUpdate.update();
-      }).catch((error) => {
-        if(errorMessage) errorMessage.set('error editing profile:' + error.message);
-      });
-    }
+    this.refs.saveInfo.onclick = () => {
+      //  if (profileUpdate) {
+      queries
+        .updateQuery({
+          epost: this.refs.epostSign.value,
+          etternavn: this.refs.etternavnSign.value,
+          fornavn: this.refs.fornavnSign.value,
+          passord: this.refs.passordSign.value,
+          adresse: this.refs.adresseSign.value,
+          postnr: this.refs.postnrSign.value,
+          poststed: this.refs.poststedSign.value,
+          tlf: this.refs.telefonSign.value,
+          id: id
+        })
+        .then(result => {
+          console.log(result);
+        })
+        .catch(error => {
+          if (errorMessage) errorMessage.set("error editing profile:" + error.message);
+        });
+      //  }
+    };
+  }
 
-    this.update();
-}
-
+  // update() {
+  //
+  //   queries.updateQuery(this.user).then((user) => {
+  //     this.refs.epostSign.value = user.epostSign;
+  //     this.refs.etternavnSign.value = user.etternavnSign;
+  //     this.refs.fornavnSign.value = user.fornavnSign;
+  //     this.refs.passordSign.value = user.passordSign;
+  //     this.refs.adresseSign.value = user.adresseSign;
+  //     this.refs.postnrSign.value = user.postnrSign;
+  //     this.refs.poststedSign.value = user.poststedSign;
+  //     this.refs.telefonSign.value = user.telefonSign;
+  //   }).catch((error) => {
+  //     if(errorMessage) errorMessage.set('Error editing profile: ' + error.message);
+  //   });
+  // }
   // queries.updateQuery(this.id).then(() => {
   //   this.refs.epostSign.value = "";
   //   this.refs.etternavnSign.value = "";
@@ -139,7 +156,6 @@ componentDidMount() {
   //   this.refs.telefonSign.value = "";
   //   this.refs.adresseSign.value = "";
   // });
-};
-
+}
 
 export default profileUpdate;

@@ -64,8 +64,7 @@ class Queries {
         } else {
           console.log(result);
           //checks if poststed and postnr is in postkoder table, if it is then we use it to make a new user.
-          connection.query("SELECT * FROM postkode WHERE postSted = ? AND postNr = ?", [object.poststed, object.postnummer],
-          (error, result) => {
+          connection.query("SELECT * FROM postkode WHERE postSted = ? AND postNr = ?", [object.poststed, object.postnummer], (error, result) => {
             if (error) {
               reject(error);
               return;
@@ -118,84 +117,81 @@ class Queries {
   }
 
   updateQuery(object) {
-    console.log(object);
-    // A query to check if a user already exist,
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE epost = ?", [object.epost], (error, result) => {
-        if (error) {
-          reject(error);
-          return;
+      connection.query(
+        "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=? WHERE id=?",
+        [object.etteravn, object.fornavn, object.epost, object.passord, object.telefon, object.adresse, object.id],
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            reject(error);
+            return;
+          }
+          // if (result.affectedRows != 1) {
+          //   reject(new Error("affectedRows was not 1"));
+          //   return;
+          // }
+          resolve(result);
         }
-        // If there exists a user with the same email (which is unique), then we log that.-
-        if (result.length >= 1 && object.epost === result[0].epost) {
-          alert("Eposten er allerede i bruk.");
-          reject();
-        } else {
-          console.log(result);
-          //checks if poststed and postnr is in postkoder table, if it is then we use it to make a new user.
-          connection.query("SELECT * FROM postkode WHERE postSted = ? AND postNr = ?", [object.poststed, object.postnummer],
-          (error, result) => {
-            if (error) {
-              reject(error);
-              return;
-            }
-            // If there is a postcode and place name, we use it in a query
-
-            if (result.length > 0) {
-              let adresseID = result[0].postkodeID;
-              connection.query(
-                "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
-                [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, adresseID],
-                (error, result) => {
-                  if (error) {
-                    reject(error);
-                    return;
-                  } else {
-                    resolve();
-                  }
-                }
-              );
-            } else {
-              // If not, then we make postkode with the user input.
-              console.log(result);
-              // Adding new postkode.
-              connection.query("INSERT INTO postkode (postSted, postNr) VALUES (?,?)",
-              [object.poststed, object.postnummer],
-              (error, result) => {
-                if (error) {
-                  reject(error);
-                } else {
-                  console.log(result);
-                  // update user with new postkode.
-                  let nyAdresseID = result.insertId;
-                  connection.query(
-                    "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
-                    [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse],
-                    (error, result) => {
-                      if (error) {
-                        reject(error);
-                        return;
-                      } else
-                      console.log(result);
-                      {
-                        resolve();
-                      }
-                    }
-                  );
-                }
-              });
-            }
-          });
-        }
-      });
+      );
     });
   }
 
+  //   //checks if poststed and postnr is in postkoder table, if it is then we use it to make a new user.
+  //   connection.query("SELECT * FROM postkode WHERE postSted = ? AND postNr = ?", [object.poststed, object.postnummer], (error, result) => {
+  //     if (error) {
+  //       reject(error);
+  //       return;
+  //     }
+  //     // If there is a postcode and place name, we use it in a query
+  //
+  //     if (result.length > 0) {
+  //       let adresseID = result[0].postkodeID;
+  //       connection.query(
+  //         "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
+  //         [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse, adresseID],
+  //         (error, result) => {
+  //           if (error) {
+  //             reject(error);
+  //             return;
+  //           } else {
+  //             resolve();
+  //           }
+  //         }
+  //       );
+  //     } else {
+  //       // If not, then we make postkode with the user input.
+  //       console.log(result);
+  //       // Adding new postkode.
+  //       connection.query("INSERT INTO postkode (postSted, postNr) VALUES (?,?)", [object.poststed, object.postnummer], (error, result) => {
+  //         if (error) {
+  //           reject(error);
+  //         } else {
+  //           console.log(result);
+  //           // update user with new postkode.
+  //           let nyAdresseID = result.insertId;
+  //           connection.query(
+  //             "UPDATE bruker SET epost=?, etternavn=?, fornavn=?, passord=?, tlf=?, adresse=? WHERE postkodeID=?",
+  //             [object.epost, object.etternavn, object.fornavn, object.passord, object.telefon, object.adresse],
+  //             (error, result) => {
+  //               if (error) {
+  //                 reject(error);
+  //                 return;
+  //               } else console.log(result);
+  //               {
+  //                 resolve();
+  //               }
+  //             }
+  //           );
+  //         }
+  //       });
+  //     }
+  //   });
+  // };
+
   searchQuery() {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adress = ?",
-      [input, input, input, input],
-      (error, result) => {
+      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adress = ?", [input, input, input, input], (error, result) => {
         if (error) reject(error);
         return;
       });
