@@ -4,89 +4,88 @@ import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
 
 class profileUpdate extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.id = props.match.params.brukerID;
-        this.bruker = {};
-    }
+    this.id = props.match.params.brukerID;
+    this.bruker = {};
+  }
 
-    render() {
-        console.log(this.bruker)
+  render() {
+    console.log(this.bruker);
 
-        return (
-            <div>
+    return (
+      <div>
         <span>
           Epost: <input type="text" ref="epostSign" />
         </span>
-                <br/>
-                <span>
-          Etternavn: <input type="text" ref="etternavnSign"/>
+        <br />
+        <span>
+          Etternavn: <input type="text" ref="etternavnSign" />
         </span>
-                <br/>
-                <span>
-          Fornavn: <input type="text" ref="fornavnSign"/>
+        <br />
+        <span>
+          Fornavn: <input type="text" ref="fornavnSign" />
         </span>
-                <br/>
-                <span>
-          Passord: <input type="password" ref="passordSign"/>
+        <br />
+        <span>
+          Passord: <input type="password" ref="passordSign" />
         </span>
-                <br/>
-                <span>
-          Adresse: <input type="text" ref="adresseSign"/>
+        <br />
+        <span>
+          Adresse: <input type="text" ref="adresseSign" />
         </span>
-                <br/>
-                <span>
-          Postnummer: <input type="text" ref="postnrSign"/>
+        <br />
+        <span>
+          Postnummer: <input type="text" ref="postnrSign" />
         </span>
-                <br/>
-                <span>
-          Poststed: <input type="text" ref="poststedSign"/>
+        <br />
+        <span>
+          Poststed: <input type="text" ref="poststedSign" />
         </span>
-                <br/>
-                <span>
-          Telefon: <input type="text" ref="telefonSign"/>
+        <br />
+        <span>
+          Telefon: <input type="text" ref="telefonSign" />
         </span>
-                <br/>
-                <button ref="saveInfo">Endre</button>
-            </div>
-        );
-    }
+        <br />
+        <button ref="saveInfo">Endre</button>
+      </div>
+    );
+  }
 
-    componentDidMount() {
-        queries.hentBruker(this.id).then((result) => {
-            this.bruker = result;
-            this.forceUpdate();
+  componentDidMount() {
+    queries.hentBruker(this.id).then(result => {
+      this.bruker = result;
+      this.forceUpdate();
 
-            this.refs.epostSign.value = result[0].epost;
-            this.refs.etternavnSign.value = result[0].etternavn;
-            this.refs.fornavnSign.value = result[0].fornavn;
-            this.refs.passordSign.value = result[0].passord;
-            this.refs.adresseSign.value = result[0].adresse;
-            /*this.refs.postnrSign.value = postkode.postNr;
+      this.refs.epostSign.value = result[0].epost;
+      this.refs.etternavnSign.value = result[0].etternavn;
+      this.refs.fornavnSign.value = result[0].fornavn;
+      this.refs.passordSign.value = result[0].passord;
+      this.refs.adresseSign.value = result[0].adresse;
+      /*this.refs.postnrSign.value = postkode.postNr;
             this.refs.poststedSign.value = postkode.postSted;*/
-            this.refs.telefonSign.value = result[0].tlf;
-        })
+      this.refs.telefonSign.value = result[0].tlf;
+    });
 
-        this.refs.saveInfo.onclick = () => {
-            let newInfo = {
-                epost: this.refs.epostSign.value,
-                etternavn: this.refs.etternavnSign.value,
-                fornavn: this.refs.fornavnSign.value,
-                passord: this.refs.passordSign.value,
-                adresse: this.refs.adresseSign.value,
-                /*this.refs.postnrSign.value = postkode.postNr;
+    this.refs.saveInfo.onclick = () => {
+      let newInfo = {
+        epost: this.refs.epostSign.value,
+        etternavn: this.refs.etternavnSign.value,
+        fornavn: this.refs.fornavnSign.value,
+        passord: this.refs.passordSign.value,
+        adresse: this.refs.adresseSign.value,
+        /*this.refs.postnrSign.value = postkode.postNr;
                 this.refs.poststedSign.value = postkode.postSted;*/
-                tlf: this.refs.telefonSign.value,
-                id: this.id
-            }
-            queries.updateQuery(newInfo).then(() => {
-                history.push("/profile")
-                this.forceUpdate();
-            })
-        }
-
-
-    }
+        tlf: this.refs.telefonSign.value,
+        id: this.id
+      };
+      queries.updateQuery(newInfo).then(() => {
+        localStorage.setItem("loggetInnBruker", JSON.stringify(newInfo));
+        history.push("/profile");
+        this.forceUpdate();
+      });
+    };
+  }
 }
-    export default profileUpdate;
+export default profileUpdate;

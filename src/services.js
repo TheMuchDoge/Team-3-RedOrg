@@ -39,14 +39,13 @@ class Queries {
         }
 
         if (result.length === 1 && passord === result[0].passord) {
-            if (result[0].adminStat) {
-                localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
-                resolve();
-            }
-            else {
-                localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
-                resolve();
-            }
+          if (result[0].adminStat) {
+            localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
+            resolve();
+          } else {
+            localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
+            resolve();
+          }
         } else {
           alert("Epost eller passord er feil.");
           reject();
@@ -122,16 +121,15 @@ class Queries {
   }
 
   searchQuery(input) {
-    return new Promise ((resolve, reject) => {
-        connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ?", [input, input, input, input], (error, result) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            resolve(result);
-        });
-    })
-
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ?", [input, input, input, input], (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(result);
+      });
+    });
   }
 
   brukerLoggetInn() {
@@ -142,111 +140,119 @@ class Queries {
   }
 
   hentIkkeGodkjenteBrukere() {
-      return new Promise((resolve, reject) => {
-          connection.query("SELECT * FROM bruker WHERE brukerGodkjent = 0", (error, result) => {
-              if (error) {
-                  reject(error);
-                  return;
-              }
-              resolve(result);
-          })
-      })
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM bruker WHERE brukerGodkjent = 0", (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(result);
+      });
+    });
   }
 
-    updateQuery(object) {
-        return new Promise((resolve, reject) => {
-            connection.query(
-                "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=? WHERE brukerID=?",
-                [object.etternavn, object.fornavn, object.epost, object.passord, object.telefon, object.adresse, object.id],
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
+  updateQuery(object) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=? WHERE brukerID=?",
+        [object.etternavn, object.fornavn, object.epost, object.passord, object.telefon, object.adresse, object.id],
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-                    resolve(result);
-                }
-            );
-        });
-    }
+          resolve(result);
+        }
+      );
+    });
+  }
 
-    hentBruker(id) {
-      return new Promise((resolve, reject) => {
-          connection.query(
-              "SELECT * FROM bruker WHERE brukerID = ?", [id], (error, result) => {
-                  if (error) {
-                      reject(error);
-                      return;
-                  }
+  hentBruker(id) {
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM bruker WHERE brukerID = ?", [id], (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
 
-                  resolve(result);
-              }
-          )
-      })
-    }
-
-
+        resolve(result);
+      });
+    });
+  }
 }
 
 class EventQueries {
   hentEvents() {
-    return new Promise ((resolve, reject) => {
-        connection.query("SELECT * FROM events WHERE eventGodkjent = 1", (error, result) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            resolve(result);
-        });
-    })
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM events WHERE eventGodkjent = 1", (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(result);
+      });
+    });
   }
 
   hentIkkeGodkjentEvents() {
-      return new Promise((resolve, reject) => {
-          connection.query("SELECT * FROM events WHERE eventGodkjent = 0", (error, result) => {
-              if (error) {
-                  reject(error);
-                  return;
-              }
-              resolve(result);
-          })
-      })
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM events WHERE eventGodkjent = 0", (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(result);
+      });
+    });
   }
 
-  godkjenning(eventID,table, bool) {
-      return new Promise ((resolve, reject) => {
-          // If bool (which stands for add or not, where true is add, then do if
-          if (bool) {
-              //If the table is event then do this
-              if(table === event) {
-                  connection.query("UPDATE events SET eventGodkjent = 1 WHERE eventID = ?", [eventID], (error, result) => {
-                      if (error) {
-                          reject(error);
-                          return;
-                      }
-                      resolve();
-                  })
-              }
-              //Else the table must be bruker, so we add it to godkjent.
-              else{
-                  connection.query("UPDATE bruker SET brukerGodkjent = 1 WHERE brukerID = ?", [eventID], (error, result) => {
-                      if (error) {
-                          reject(error);
-                          return;
-                      }
-                      resolve();
-                  })
-              }
+  createNewEvent(object) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO events (eventNavn, eventPlass, eventDatoStart, eventDatoSlutt, informasjon) VAlUE (?,?,?,?,?)",
+        [object.eventNavn, object.eventPlass, object.eventDatoStart, object.eventDatoSlutt, object.informasjon],
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return;
           }
-          else {
-              // it not true, then it send it back
-              resolve();
-          }
-      })
+          resolve(result);
+        }
+      );
+    });
+  }
+
+  godkjenning(eventID, table, bool) {
+    return new Promise((resolve, reject) => {
+      // If bool (which stands for add or not, where true is add, then do if
+      if (bool) {
+        //If the table is event then do this
+        if (table === event) {
+          connection.query("UPDATE events SET eventGodkjent = 1 WHERE eventID = ?", [eventID], (error, result) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve();
+          });
+        } else {
+          //Else the table must be bruker, so we add it to godkjent.
+          connection.query("UPDATE bruker SET brukerGodkjent = 1 WHERE brukerID = ?", [eventID], (error, result) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve();
+          });
+        }
+      } else {
+        // it not true, then it send it back
+        resolve();
+      }
+    });
   }
 }
-
-
 
 let queries = new Queries();
 let eventQueries = new EventQueries();
