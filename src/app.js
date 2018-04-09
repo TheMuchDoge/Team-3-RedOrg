@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Link, HashRouter, Switch, Route } from "react-router-dom";
 
 import Login from "./Login";
-import Profile from "./profile";
+import Profile from "./Profile";
 import Menu from "./menu";
 import SearchResult from "./SearchResult";
 import Kalender from "./Kalender";
@@ -28,7 +28,7 @@ ReactDOM.render(
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Skjema} />
         <Route exact path="/home" component={Home} />
-        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/profile/:brukerID" component={Profile} />
         <Route exact path="/searchResult/:searchInput" component={SearchResult} />
         <Route exact path="/kalender" component={Kalender} />
         <Route exact path="/adminSite" component={AdminSite} />

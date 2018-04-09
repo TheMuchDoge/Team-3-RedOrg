@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 class SearchResult extends React.Component {
   render() {
@@ -15,7 +16,8 @@ class SearchResult extends React.Component {
       for (let bruker of brukere) {
         brukerListe.push(
           <li key={bruker.brukerID}>
-            {bruker.fornavn}, {bruker.etternavn}, {bruker.epost}
+              <NavLink activestyle={{ color: "green" }} exact to={"/profile/" + bruker.brukerID}>{bruker.fornavn}, {bruker.etternavn}</NavLink>, {bruker.epost} |
+              <NavLink activestyle={{ color: "green" }} exact to={"/profileUpdate/" + bruker.brukerID}>Rediger</NavLink>{" "}
           </li>
         );
       }

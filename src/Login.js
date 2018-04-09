@@ -23,7 +23,7 @@ class Login extends React.Component {
         <br />
         <button ref="loginBtn">Login</button>
       </div>
-    );b
+    );
   }
 
   componentDidMount() {

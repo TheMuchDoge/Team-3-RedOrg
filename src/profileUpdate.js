@@ -9,11 +9,10 @@ class profileUpdate extends React.Component {
 
     this.id = props.match.params.brukerID;
     this.bruker = {};
+
   }
 
   render() {
-    console.log(this.bruker);
-
     return (
       <div>
         <span>
@@ -55,7 +54,7 @@ class profileUpdate extends React.Component {
 
   componentDidMount() {
     queries.hentBruker(this.id).then(result => {
-      this.bruker = result;
+      this.bruker = result[0];
       this.forceUpdate();
 
       this.refs.epostSign.value = result[0].epost;
@@ -81,9 +80,15 @@ class profileUpdate extends React.Component {
         id: this.id
       };
       queries.updateQuery(newInfo).then(() => {
-        localStorage.setItem("loggetInnBruker", JSON.stringify(newInfo));
-        history.push("/profile");
-        this.forceUpdate();
+          let brukerLoggetInn = queries.brukerLoggetInn();
+          console.log(brukerLoggetInn.brukerID + " ||| " + this.bruker.brukerID)
+          if(brukerLoggetInn.brukerID === this.bruker.brukerID) {
+              LocalStorage.removeItem('loggetInnBruker');
+              localStorage.setItem("loggetInnBruker", JSON.stringify(newInfo));
+              console.log('This user is schanger')
+          }
+          history.push("/home");
+            this.forceUpdate();
       });
     };
   }

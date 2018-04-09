@@ -51,7 +51,7 @@ class newEvent extends React.Component {
         this.refs.datoStartSign.value = "";
         this.refs.datoSluttSign.value = "";
         this.refs.infoSign.value = "";
-        history.push("./home");
+        history.push("./kalender");
       });
     };
   }

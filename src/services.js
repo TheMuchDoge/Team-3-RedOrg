@@ -39,13 +39,8 @@ class Queries {
         }
 
         if (result.length === 1 && passord === result[0].passord) {
-          if (result[0].adminStat) {
             localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
             resolve();
-          } else {
-            localStorage.setItem("loggetInnBruker", JSON.stringify(result[0]));
-            resolve();
-          }
         } else {
           alert("Epost eller passord er feil.");
           reject();
@@ -122,11 +117,12 @@ class Queries {
 
   searchQuery(input) {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ?", [input, input, input, input], (error, result) => {
+      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ? AND brukerGodkjent = 1", [input, input, input, input], (error, result) => {
         if (error) {
           reject(error);
           return;
         }
+        console.log(result)
         resolve(result);
       });
     });
@@ -210,8 +206,8 @@ class EventQueries {
   createNewEvent(object) {
     return new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO events (eventNavn, eventPlass, eventDatoStart, eventDatoSlutt, informasjon) VAlUE (?,?,?,?,?)",
-        [object.eventNavn, object.eventPlass, object.eventDatoStart, object.eventDatoSlutt, object.informasjon],
+        "INSERT INTO events (eventNavn, eventPlass, eventDatoStart, eventDatoSlutt, informasjon) VAlUES (?,?,?,?,?)",
+        [object.Navn, object.Lokasjon, object.dato_start, object.dato_slutt, object.annen_info],
         (error, result) => {
           if (error) {
             reject(error);
