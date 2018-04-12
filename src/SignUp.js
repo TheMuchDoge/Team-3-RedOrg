@@ -11,39 +11,46 @@ class Skjema extends React.Component {
   render() {
     return (
       <div>
-        <span>
-          Epost: <input type="text" placeholder="Epost" ref="epostSign" required />
-        </span>
-        <br />
-        <span>
-          Etternavn: <input type="text" placeholder="Etternavn" ref="etternavnSign" required />
-        </span>
-        <br />
-        <span>
-          Fornavn: <input type="text" placeholder="Fornavn" ref="fornavnSign" required />
-        </span>
-        <br />
-        <span>
-          Passord: <input type="password" placeholder="Passord" ref="passordSign" required />
-        </span>
-        <br />
-        <span>
-          Adresse: <input type="text" placeholder="Adresse" ref="adresseSign" required />
-        </span>
-        <br />
-        <span>
-          Postnummer: <input type="number" placeholder="Postnummer" ref="postnrSign" required />
-        </span>
-        <br />
-        <span>
-          Poststed: <input type="text" placeholder="Poststed" ref="poststedSign" required />
-        </span>
-        <br />
-        <span>
-          Telefon: <input type="text" placeholder="Telefon" ref="telefonSign" required />
-        </span>
-        <br />
-        <button ref="SignUp">Registrer</button>
+          <table>
+              <tbody>
+              <tr>
+                  <td><b>Epost:</b></td>
+                  <td> <input type="text" placeholder="Epost" ref="epostSign" required /></td>
+              </tr>
+              <tr>
+                  <td><b> Etternavn: </b></td>
+                  <td><input type="text" placeholder="Etternavn" ref="etternavnSign" required /></td>
+              </tr>
+              <tr>
+                  <td><b>Fornavn:</b></td>
+                  <td><input type="text" placeholder="Fornavn" ref="fornavnSign" required /></td>
+              </tr>
+              <tr>
+                  <td><b>Passord:</b></td>
+                  <td> <input type="password" placeholder="Passord" ref="passordSign" required /></td>
+              </tr>
+              <tr>
+                  <td><b>Adresse: </b></td>
+                  <td><input type="text" placeholder="Adresse" ref="adresseSign" required /></td>
+              </tr>
+              <tr>
+                  <td><b>Postnummer:</b></td>
+                  <td><input type="number" placeholder="Postnummer" ref="postnrSign" required /></td>
+              </tr>
+              <tr>
+                  <td><b>Poststed: </b></td>
+                  <td><input type="text" placeholder="Poststed" ref="poststedSign" required /></td>
+              </tr>
+              <tr>
+                  <td><b>Telefon:</b></td>
+                  <td><input type="text" placeholder="Telefon" ref="telefonSign" required /></td>
+              </tr>
+
+              </tbody>
+          </table>
+          <button ref="SignUp">Registrer</button>
+
+
       </div>
     );
   }
@@ -51,14 +58,14 @@ class Skjema extends React.Component {
   componentDidMount() {
     this.refs.SignUp.onclick = () => {
       let newUser = {
-        epost: this.refs.epostSign.value.toLowerCase(),
-        etternavn: this.refs.etternavnSign.value.toLowerCase(),
-        fornavn: this.refs.fornavnSign.value.toLowerCase(),
+        epost: this.refs.epostSign.value,
+        etternavn: this.refs.etternavnSign.value,
+        fornavn: this.refs.fornavnSign.value,
         passord: this.refs.passordSign.value,
-        adresse: this.refs.adresseSign.value.toLowerCase(),
-        postnummer: this.refs.postnrSign.value.toLowerCase(),
-        poststed: this.refs.poststedSign.value.toLowerCase(),
-        telefon: this.refs.telefonSign.value.toLowerCase()
+        adresse: this.refs.adresseSign.value,
+        postnummer: this.refs.postnrSign.value,
+        poststed: this.refs.poststedSign.value,
+        telefon: this.refs.telefonSign.value
       };
       queries.newUserQuery(newUser).then(() => {
           this.refs.epostSign.value = "";

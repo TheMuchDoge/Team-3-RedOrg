@@ -8,8 +8,9 @@ class AdminSite extends React.Component {
 
         return (
             <div>
-                <EventGodkjenning></EventGodkjenning>
+                <EventGodkjenning/>
                 <BrukerGodkjenning/>
+
             </div>
         )
     }

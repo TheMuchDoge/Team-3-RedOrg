@@ -1,4 +1,6 @@
 import mysql from "mysql";
+import $ from "jquery";
+import {roller} from "./rollerOgEventMal.js";
 
 // Setup database server reconnection when server timeouts connection:
 let connection;
@@ -32,7 +34,7 @@ connect();
 class Queries {
   loginQuery(epost, passord) {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE epost = ?", [epost], (error, result) => {
+      connection.query("SELECT * FROM bruker WHERE epost = ? AND brukerGodkjent = 1", [epost], (error, result) => {
         if (error) {
           reject(error);
           return;
@@ -62,13 +64,14 @@ class Queries {
           alert("Eposten er allerede i bruk.");
           reject();
         } else {
-          console.log(result);
+
           //checks if poststed and postnr is in postkoder table, if it is then we use it to make a new user.
           connection.query("SELECT * FROM postkode WHERE postSted = ? AND postNr = ?", [object.poststed, object.postnummer], (error, result) => {
             if (error) {
               reject(error);
               return;
             }
+            console.log(result)
             // If there is a postcode and place name, we use it in a query
             if (result.length > 0) {
               let adresseID = result[0].postkodeID;
@@ -86,7 +89,7 @@ class Queries {
               );
             } else {
               // If not, then we make postkode with the user input.
-              console.log(result);
+
               // Adding new postkode.
               connection.query("INSERT INTO postkode (postSted, postNr) VALUES (?,?);", [object.poststed, object.postnummer], (error, result) => {
                 if (error) {
@@ -117,12 +120,11 @@ class Queries {
 
   searchQuery(input) {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ? AND brukerGodkjent = 1", [input, input, input, input], (error, result) => {
+      connection.query("SELECT * FROM bruker WHERE brukerGodkjent = 1 AND fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ?  ", [input, input, input, input], (error, result) => {
         if (error) {
           reject(error);
           return;
         }
-        console.log(result)
         resolve(result);
       });
     });
@@ -166,7 +168,7 @@ class Queries {
 
   hentBruker(id) {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE brukerID = ?", [id], (error, result) => {
+      connection.query("SELECT * FROM bruker b, postkode p WHERE b.brukerID = ? AND b.postkodeID = p.postkodeID", [id, id], (error, result) => {
         if (error) {
           reject(error);
           return;
@@ -176,15 +178,97 @@ class Queries {
       });
     });
   }
+
+    sendKvali(id, rolle, dato) {
+    return new Promise((resolve, reject) => {
+      connection.query("INSERT INTO kvali (brukerID, kvaliType, utlopsDato) VALUES (?,?,?)", [id,rolle,dato], (error, result) => {
+          if (error) {
+              reject(error);
+              return;
+          }
+          resolve();
+      })
+    })
+    }
+
+    hentKvali(id) {
+        return new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM kvali WHERE brukerID = ? ", [id], (error, result) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                for (let x of result) {
+                    let v = new Date();
+                    if(x.utlopsDato <= v) {
+                      result.splice(result.indexOf(x), 1);
+                      continue;
+                    }
+                    x.utlopsDato = x.utlopsDato.toDateString();
+                }
+                resolve(result);
+            })
+        })
+    }
+
+    isSubArray (subArray, array) {
+        for(let i = 0; i < subArray.length; i++) {
+            if($.inArray(subArray[i], array) === -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    hentRolle(id) {
+      return new Promise ((resolve, reject) => {
+           let muligRolle = [];
+           this.hentKvali(id).then((result) => {
+               let kvaliArray = [];
+               for (let kvali of result) {
+                   kvaliArray.push(kvali.kvaliType);
+               }
+                for (let rolle of roller) {
+                    if((this.isSubArray(rolle.krav, kvaliArray)) || kvaliArray === rolle.krav) {
+                        muligRolle.push(rolle.key);
+                    }
+                }
+
+               resolve(muligRolle);
+            });
+      });
+    }
 }
 
 class EventQueries {
+    hentEvent(id) {
+        return new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM events WHERE eventID = ?", [id], (error, result) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                result[0].eventDatoStart = result[0].eventDatoStart.toDateString();
+                result[0].eventDatoSlutt = result[0].eventDatoSlutt.toDateString();
+                resolve(result);
+            });
+        });
+    }
+
   hentEvents() {
     return new Promise((resolve, reject) => {
       connection.query("SELECT * FROM events WHERE eventGodkjent = 1", (error, result) => {
         if (error) {
           reject(error);
           return;
+        }
+        for (let x of result) {
+            let v = new Date();
+            if(x.eventDatoStart <= v) {
+                result.splice(result.indexOf(x), 1)
+            }
+            x.eventDatoStart = x.eventDatoStart.toDateString();
+            x.eventDatoSlutt = x.eventDatoSlutt.toDateString();
         }
         resolve(result);
       });
@@ -248,7 +332,34 @@ class EventQueries {
       }
     });
   }
+
+  joinEvent(eventID, brukerID, kvali) {
+        return new Promise ((resolve, reject) => {
+            connection.query("INSERT INTO deltakelse (brukerID, eventID, deltarSom,  mottatPoeng) VALUES (?,?,?,1)", [brukerID, eventID,kvali], (error, result) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve();
+            })
+        })
+  }
+
+    hentDeltakere(eventID) {
+        return new Promise ((resolve, reject) => {
+            connection.query("SELECT * FROM bruker b, deltakelse d WHERE d.eventID = ? AND d.brukerID = b.brukerID", [eventID], (error, result) =>  {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve(result);
+            })
+        })
+  }
+
 }
+
+
 
 let queries = new Queries();
 let eventQueries = new EventQueries();

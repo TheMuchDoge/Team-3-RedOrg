@@ -71,7 +71,7 @@ class Menu extends React.Component {
                       <NavLink activeStyle={{color: "green"}} to="/kalender">
                           Kalender
                       </NavLink>{" "}
-                      <NavLink activeStyle={{color: "green"}} to="/profile">
+                      <NavLink activeStyle={{color: "green"}} to={"/profile/" + brukerLoggetInn.brukerID}>
                           Profile
                       </NavLink>{" "}
                       <span>
@@ -84,8 +84,8 @@ class Menu extends React.Component {
                         } else {
                             queries.searchQuery(this.refs.searchInput.value).then(result => {
                                 localStorage.setItem("searchResults", JSON.stringify(result));
-                                history.push("./searchResults/" + this.refs.searchInput.value);
-                                this.forceUpdate();
+
+                                history.push("/searchResult/" + this.refs.searchInput.value);
                             });
                         }
                     }}

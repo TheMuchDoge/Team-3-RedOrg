@@ -13,16 +13,22 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <span>
-          Epost: <input type="text" placeholder="Epost" ref="epost" />
-        </span>
-        <br />
-        <span>
-          Passord: <input type="password" placeholder="Passord" ref="passord" />
-        </span>
-        <br />
-        <button ref="loginBtn">Login</button>
+          <table>
+              <tbody>
+              <tr>
+                  <td><b>Epost: </b></td>
+                  <td><input type="text" placeholder="Epost" ref="epost" /></td>
+              </tr>
+              <tr>
+                  <td><b>Passord: </b></td>
+                  <td><input type="password" placeholder="Passord" ref="passord" /></td>
+              </tr>
+              </tbody>
+          </table>
+          <button ref="loginBtn">Login</button>
       </div>
+
+
     );
   }
 

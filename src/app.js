@@ -12,6 +12,7 @@ import Skjema from "./SignUp";
 import AdminSite from "./adminSite";
 import profileUpdate from "./profileUpdate";
 import createEvent from "./createEvent";
+import event from "./event";
 
 // The Route-elements define the different pages of the application
 // through a path and which component should be used for the path.
@@ -34,6 +35,7 @@ ReactDOM.render(
         <Route exact path="/adminSite" component={AdminSite} />
         <Route exact path="/profileUpdate/:brukerID" component={profileUpdate} />
         <Route exact path="/createEvent" component={createEvent} />
+        <Route exact path="/event/:eventID" component={event} />
       </Switch>
     </div>
   </HashRouter>,
