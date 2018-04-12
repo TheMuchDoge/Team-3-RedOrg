@@ -2,6 +2,7 @@ import React from "react";
 import { eventQueries, queries } from "./services";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
+import {eventMaler} from "./rollerOgEventMal.js"
 
 class newEvent extends React.Component {
   constructor(props) {
@@ -9,6 +10,12 @@ class newEvent extends React.Component {
   }
 
   render() {
+      let eventList = []
+      for (let x in eventMaler) {
+          eventList.push(
+              <option key={eventMaler[x].key} value={eventMaler[x].key}>{eventMaler[x].navn}</option>
+          )
+      }
     return (
       <div>
           <table>
@@ -28,6 +35,10 @@ class newEvent extends React.Component {
                   <tr>
                       <td><b>Slutt Dato:</b></td>
                       <td><input type="date" ref="datoSluttSign" /></td>
+                  </tr>
+                  <tr>
+                      <td><b>Type arrangment:</b></td>
+                      <td><select ref="eventKey" >{eventList}</select></td>
                   </tr>
                   <tr>
                       <td><b>Annen Informasjon:</b></td>

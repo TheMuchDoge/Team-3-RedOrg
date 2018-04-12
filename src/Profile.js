@@ -18,7 +18,11 @@ class Profile extends React.Component  {
         for (let kvali of this.kvali) {
             kvaliList.push(
                 <li key={kvali.kvaliID}>
-                    <p><b>{kvali.kvaliType}</b></p>
+                    <b>{kvali.kvaliType}</b><button onClick={() => {
+                        queries.removeKvali(kvali.kvaliID).then(() => {
+                            this.forceUpdate();
+                        })
+                }}>x</button>
                     <p>t.o.m.: {kvali.utlopsDato}</p>
                 </li>
             )
@@ -32,7 +36,7 @@ class Profile extends React.Component  {
         }
         let brukerOne = queries.brukerLoggetInn();
 
-        if (brukerOne.adminStat || bruker.brukerID === this.bruker.brukerID) {
+        if (brukerOne.adminStat || brukerOne.brukerID === this.bruker.brukerID) {
             return (
                 <div>
                     <h1>{this.bruker.fornavn} {this.bruker.etternavn}</h1>
@@ -149,12 +153,12 @@ class Profile extends React.Component  {
                             <td>{this.bruker.poeng}</td>
                         </tr>
                         <tr>
-                            <tr><b>Roller:</b></tr>
-                            <tr>{rolleList}</tr>
+                            <td><b>Roller:</b></td>
+                            <td>{rolleList}</td>
                         </tr>
                         <tr>
                             <td><b>Kvalifikasjoner:</b></td>
-                           <ul>{kvaliList}</ul>
+                           <td>{kvaliList}</td>
                         </tr>
 
                         </tbody>
@@ -166,21 +170,22 @@ class Profile extends React.Component  {
     }
 
     componentDidMount() {
-        this.refs.addBtn.onclick = () => {
+        if(this.refs.addBtn) {
+            this.refs.addBtn.onclick = () => {
                 queries.sendKvali(this.id, this.refs.kvali.value, this.refs.nyKvaliDato.value).then(() => {
                     this.forceUpdate();
                 });
-        };
+            };
+        }
+
 
         queries.hentBruker(this.id).then((result) => {
             this.bruker = result[0];
-            this.forceUpdate();
         });
 
 
         queries.hentKvali(this.id).then((result) => {
             this.kvali = result;
-            this.forceUpdate();
         });
 
         queries.hentRolle(this.id).then((result) => {

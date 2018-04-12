@@ -62,8 +62,8 @@ class profileUpdate extends React.Component {
       this.refs.fornavnSign.value = result[0].fornavn;
       this.refs.passordSign.value = result[0].passord;
       this.refs.adresseSign.value = result[0].adresse;
-      /*this.refs.postnrSign.value = postkode.postNr;
-            this.refs.poststedSign.value = postkode.postSted;*/
+      this.refs.postnrSign.value = result[0].postNr;
+      this.refs.poststedSign.value = result[0].postSted;
       this.refs.telefonSign.value = result[0].tlf;
     });
 
@@ -74,16 +74,15 @@ class profileUpdate extends React.Component {
         fornavn: this.refs.fornavnSign.value,
         passord: this.refs.passordSign.value,
         adresse: this.refs.adresseSign.value,
-        /*this.refs.postnrSign.value = postkode.postNr;
-                this.refs.poststedSign.value = postkode.postSted;*/
+        postNr: this.refs.postnrSign.value,
+        postSted: this.refs.poststedSign.value,
         tlf: this.refs.telefonSign.value,
         id: this.id
       };
       queries.updateQuery(newInfo).then(() => {
           let brukerLoggetInn = queries.brukerLoggetInn();
-          console.log(brukerLoggetInn.brukerID + " ||| " + this.bruker.brukerID)
           if(brukerLoggetInn.brukerID === this.bruker.brukerID) {
-              LocalStorage.removeItem('loggetInnBruker');
+              localStorage.removeItem('loggetInnBruker');
               localStorage.setItem("loggetInnBruker", JSON.stringify(newInfo));
               console.log('This user is schanger')
           }

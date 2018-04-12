@@ -76,8 +76,7 @@ class Skjema extends React.Component {
           this.refs.poststedSign.value = "";
           this.refs.telefonSign.value = "";
           this.refs.adresseSign.value = "";
-        localStorage.setItem("loggetInnBruker",JSON.stringify(newUser));
-        history.push("./home");
+        alert('Registreringen din har  blitt sendt til en admin for å bli godkjent \nKontakt din admin om du lurer på noe')
       });
 
     };
