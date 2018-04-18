@@ -118,6 +118,34 @@ header nav{
   background-color: #fff;
 }
 
-nav{
-  color: green;
+#hiddenDiv, #godkjenningBruker {
+    display: none;
+}
+
+.LoginDiv {
+    margin: 0 auto;
+    width: 300px;
+}
+
+.LoginDiv table tr td {
+    padding: 5px;
+}
+
+.LoginDiv > input {
+    margin: 50px;
+}
+
+
+#Kalender Button {
+    margin-top: 25px;
+}
+
+#Kalender Grid Row Table tbody tr td {
+    margin-top: 15px;
+}
+
+.menu Button
+{
+    margin-right: 5px;
+    margin-left: 5px;
 }
