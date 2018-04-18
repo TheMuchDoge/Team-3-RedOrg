@@ -14,27 +14,31 @@ class Kalender extends React.Component {
     for (let i of this.events) {
       eventList.push(
         <li key={i.eventID}>
-          {i.eventNavn} @ {i.eventPlass}
+            <NavLink activeStyle={{ color: "green" }} to={"/event/" + i.eventID}>
+                {i.eventNavn} @ {i.eventPlass}
+            </NavLink>{" "}
+
         </li>
       );
     }
 
     return (
       <div>
-        <h1>Kalender: </h1>
-        <ul>{eventList}</ul>
-        <NavLink activeStyle={{ color: "green" }} to={"/createEvent/"}>
-          Lag event
-        </NavLink>{" "}
+          <NavLink activeStyle={{ color: "green" }} to={"/createEvent/"}>
+              Lag event
+          </NavLink>{" "}
+          <h1>Kalender: </h1>
+          <ul>{eventList}</ul>
       </div>
     );
   }
 
   componentDidMount() {
-    eventQueries.hentEvents().then(results => {
+    eventQueries.hentEvents().then((results) => {
       this.events = results;
       this.forceUpdate();
     });
+
   }
 }
 

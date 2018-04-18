@@ -11,27 +11,38 @@ class EventGodkjenning extends React.Component {
     let arrayEvents = [];
         for (let i of this.events) {
             arrayEvents.push(
-                <li key={i.eventID}>{i.eventNavn} @ {i.eventPlass}, dato: {i.eventDato} <button onClick={() => {
-                    eventQueries.godkjenning(i.eventID, event, true).then(() => {
-                        this.events.splice(this.events.indexOf(i), 1);
-                        this.forceUpdate();
-                    });
-                }
-                }>v</button>
-                    <button onClick={() => {
-                    eventQueries.godkjenning(i.eventID, event, false).then(() => {
-                        this.events.splice(this.events.indexOf(i), 1);
-                        this.forceUpdate();
-                    });
-                }
-                }>x</button></li>
+                <tr key={i.eventID}>
+                    <td>
+                    {i.eventNavn} @ {i.eventPlass}, dato: {i.eventDato}
+                    </td>
+
+                    <td>
+                        <button onClick={() => {
+                            eventQueries.godkjenning(i.eventID, event, true).then(() => {
+                                this.events.splice(this.events.indexOf(i), 1);
+                                this.forceUpdate();
+                            });
+                        }}>v</button>
+
+                        <button onClick={() => {
+                        eventQueries.godkjenning(i.eventID, event, false).then(() => {
+                            this.events.splice(this.events.indexOf(i), 1);
+                            this.forceUpdate();
+                        });
+                        }}>x</button>
+                    </td>
+                </tr>
             )
         }
 
         return (
             <div>
                 <h1>Event godkjenning:</h1>
-                <ul>{arrayEvents}</ul>
+                <table>
+                    <tbody>
+                        {arrayEvents}
+                    </tbody>
+                </table>
             </div>
         )
     }
