@@ -1,5 +1,7 @@
 import React from "react";
 import {eventQueries} from "./services";
+import {Button, Glyphicon, Table} from "react-bootstrap"
+import { NavLink } from "react-router-dom";
 
 class EventGodkjenning extends React.Component {
     constructor (props) {
@@ -13,23 +15,25 @@ class EventGodkjenning extends React.Component {
             arrayEvents.push(
                 <tr key={i.eventID}>
                     <td>
-                    {i.eventNavn} @ {i.eventPlass}, dato: {i.eventDato}
+                        <h3><NavLink exact to={"/event/" + i.eventID} >{i.eventNavn}</NavLink> @ {i.eventPlass}, dato: {i.eventDatoStart} - {i.eventDatoSlutt}</h3>
                     </td>
 
                     <td>
-                        <button onClick={() => {
+                        <Button style={{marginTop: 10+"px"}} bsStyle="success"
+                            onClick={() => {
                             eventQueries.godkjenning(i.eventID, event, true).then(() => {
                                 this.events.splice(this.events.indexOf(i), 1);
                                 this.forceUpdate();
                             });
-                        }}>v</button>
+                        }}><Glyphicon glyph="ok"/></Button>
 
-                        <button onClick={() => {
+                        <Button style={{marginTop: 10+"px"}} bsStyle="danger"
+                            onClick={() => {
                         eventQueries.godkjenning(i.eventID, event, false).then(() => {
                             this.events.splice(this.events.indexOf(i), 1);
                             this.forceUpdate();
                         });
-                        }}>x</button>
+                        }}><Glyphicon glyph="remove"/></Button>
                     </td>
                 </tr>
             )
@@ -38,11 +42,11 @@ class EventGodkjenning extends React.Component {
         return (
             <div>
                 <h1>Event godkjenning:</h1>
-                <table>
+                <Table>
                     <tbody>
                         {arrayEvents}
                     </tbody>
-                </table>
+                </Table>
             </div>
         )
     }

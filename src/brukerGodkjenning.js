@@ -1,6 +1,7 @@
 import React from "react";
 import { eventQueries, queries } from "./services";
 import { NavLink } from "react-router-dom";
+import {Button,Glyphicon, Table} from "react-bootstrap"
 
 class BrukerGodkjenning extends React.Component {
   constructor(props) {
@@ -15,11 +16,10 @@ class BrukerGodkjenning extends React.Component {
       arrayBrukere.push(
         <tr key={i.brukerID}>
             <td>
-                <NavLink activestyle={{ color: "green" }} to={"/profile/" + i.brukerID}>{i.fornavn} {i.etternavn}</NavLink>{" "}
+                <NavLink  to={"/profile/" + i.brukerID} ><h3>{i.fornavn} {i.etternavn}</h3></NavLink>{" "}
             </td>
-
             <td>
-              <button
+              <Button style={{marginTop: 10+"px"}}bsStyle="success"
                 onClick={() => {
                   eventQueries.godkjenning(i.brukerID, "bruker", true).then(() => {
                     this.brukere.splice(this.brukere.indexOf(i), 1);
@@ -27,9 +27,9 @@ class BrukerGodkjenning extends React.Component {
                   });
                 }}
               >
-                v
-              </button>
-              <button
+                  <Glyphicon glyph="ok"/>
+              </Button>{" "}
+              <Button style={{marginTop: 10+"px"}} bsStyle="danger"
                 onClick={() => {
                   eventQueries.godkjenning(i.brukerID, "bruker", false).then(() => {
                     this.brukere.splice(this.brukere.indexOf(i), 1);
@@ -37,8 +37,8 @@ class BrukerGodkjenning extends React.Component {
                   });
                 }}
               >
-                x
-              </button>
+                  <Glyphicon glyph="remove"/>
+              </Button>
             </td>
         </tr>
       );
@@ -47,11 +47,11 @@ class BrukerGodkjenning extends React.Component {
     return (
       <div>
         <h1>Bruker godkjenning:</h1>
-        <table>
+        <Table striped>
             <tbody>
                 {arrayBrukere}
             </tbody>
-        </table>
+        </Table>
       </div>
     );
   }
@@ -61,6 +61,7 @@ class BrukerGodkjenning extends React.Component {
       this.brukere = result;
       this.forceUpdate();
     });
+
   }
 }
 

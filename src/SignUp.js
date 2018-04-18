@@ -2,6 +2,7 @@ import React from "react";
 import { queries } from "./services";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
+import {Button} from "react-bootstrap"
 
 class Skjema extends React.Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class Skjema extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="LoginDiv">
           <table>
               <tbody>
               <tr>
@@ -48,7 +49,7 @@ class Skjema extends React.Component {
 
               </tbody>
           </table>
-          <button ref="SignUp">Registrer</button>
+          <Button bsStyle="info" id="SignUp">Registrer</Button>
 
 
       </div>
@@ -56,7 +57,8 @@ class Skjema extends React.Component {
   }
 
   componentDidMount() {
-    this.refs.SignUp.onclick = () => {
+      let btn = document.getElementById("SignUp")
+    btn.onclick = () => {
       let newUser = {
         epost: this.refs.epostSign.value,
         etternavn: this.refs.etternavnSign.value,

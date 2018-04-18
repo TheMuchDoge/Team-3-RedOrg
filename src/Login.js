@@ -1,7 +1,7 @@
 import React from "react";
 import Menu from "./menu";
 import { queries } from "./services";
-
+import {Button} from "react-bootstrap"
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
 
@@ -12,7 +12,7 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="LoginDiv">
           <table>
               <tbody>
               <tr>
@@ -25,7 +25,7 @@ class Login extends React.Component {
               </tr>
               </tbody>
           </table>
-          <button ref="loginBtn">Login</button>
+          <Button bsStyle="info" id="loginBtn">Login</Button>
       </div>
 
 
@@ -33,7 +33,8 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    this.refs.loginBtn.onclick = () => {
+      var btn = document.getElementById("loginBtn")
+    btn.onclick = () => {
       queries.loginQuery(this.refs.epost.value  , this.refs.passord.value).then(() => {
         history.push("/home");
       });

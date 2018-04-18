@@ -3,128 +3,122 @@ import { NavLink } from "react-router-dom";
 import { queries } from "./services.js";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
+import {Button, Glyphicon} from "react-bootstrap";
 
 class Menu extends React.Component {
   constructor(props) {
     super(props);
+    this.activeStyle ={
+        bsStyle:"success"
+    }
   }
 
   render() {
       let brukerLoggetInn = queries.brukerLoggetInn();
-      console.log();
 
       if (brukerLoggetInn) {
           if (brukerLoggetInn.adminStat) {
               return (
-                  <div>
-                      <NavLink activeStyle={{color: "green"}} to="/home">
-                          Home
+                  <div className="menu">
+                      <Button onClick={ () => {
+                          window.history.back();
+                          this.forceUpdate();
+                      }}><Glyphicon glyph="arrow-left"/></Button>
+                      <NavLink  to="/kalender">
+                          <Button>Kalender</Button>
                       </NavLink>{" "}
-                      <NavLink activeStyle={{color: "green"}} to="/kalender">
-                          Kalender
+                      <NavLink  to={"/profile/" + brukerLoggetInn.brukerID}>
+                          <Button>Profile</Button>
                       </NavLink>{" "}
-                      <NavLink activeStyle={{color: "green"}} to={"/profile/" + brukerLoggetInn.brukerID}>
-                          Profile
-                      </NavLink>{" "}
-                      <NavLink activestyle={{color: "green"}} to="/adminsite">
-                          Admin Stuff
+                      <NavLink to="/adminsite">
+                          <Button>Admin Stuff</Button>
                       </NavLink>{" "}
                       <span>
-                <input type="text" placeholder="Søk" ref="searchInput"/>
-                <button
-                    ref="searchButton"
-                    onClick={() => {
-                        if (this.refs.searchInput.value === "") {
-                            alert("Vennligst fyll inn noe for å søke");
-                        } else {
-                            queries.searchQuery(this.refs.searchInput.value).then(result => {
-                                localStorage.setItem("searchResults", JSON.stringify(result));
+                        <input type="text" placeholder="Søk" ref="searchInput"/>
+                        <Button
+                            ref="searchButton"
+                            onClick={() => {
+                                if (this.refs.searchInput.value === "") {
+                                    alert("Vennligst fyll inn noe for å søke");
+                                } else {
+                                    queries.searchQuery(this.refs.searchInput.value).then(result => {
+                                        localStorage.setItem("searchResults", JSON.stringify(result));
 
-                                history.push("/searchResult/" + this.refs.searchInput.value);
-                            });
-                        }
-                    }}
-                >
-                  søk
-                </button>
-              </span>
-                      <button
-                          ref="logoutButton"
-                          onClick={() => {
-                              localStorage.removeItem("loggetInnBruker"); // Delete User-object from browser
-                              history.push("/login");
-                              this.forceUpdate();
-                          }}
-                      >
-                          <NavLink activestyle={{color: "green"}} exact to="/login">
-                              Sign out
-                          </NavLink>
-                      </button>
+                                        history.push("/searchResult/" + this.refs.searchInput.value);
+                                    });
+                                }
+                            }}
+                        >
+                          <Glyphicon glyph="search"/>
+                        </Button>
+                      </span>
+                      <NavLink  exact to="/login">
+                          <Button
+                              ref="logoutButton"
+                              onClick={() => {
+                                  localStorage.removeItem("loggetInnBruker"); // Delete User-object from browser
+                                  history.push("/login");
+                                  this.forceUpdate();
+                              }}
+                          >Sign out
+                          </Button>
+                      </NavLink>
                   </div>
               );
           } else {
               return (
-                  <div>
-                      <NavLink activeStyle={{color: "green"}} to="/home">
-                          Home
+                  <div className="menu">
+                      <Button onClick={ () => {
+                          window.history.back();
+                          this.forceUpdate();
+                      }}><Glyphicon glyph="arrow-left"/></Button>
+                      <NavLink  to="/kalender">
+                          <Button>Kalender</Button>
                       </NavLink>{" "}
-                      <NavLink activeStyle={{color: "green"}} to="/kalender">
-                          Kalender
-                      </NavLink>{" "}
-<<<<<<< HEAD
-                      <NavLink activeStyle={{color: "green"}} to="/profile">
-=======
-                      <NavLink activeStyle={{color: "green"}} to={"/profile/" + brukerLoggetInn.brukerID}>
->>>>>>> ce39bcffc4310761321dc18965d2bc802ce676fe
-                          Profile
+                      <NavLink  to={"/profile/" + brukerLoggetInn.brukerID}>
+                          <Button>Profile</Button>
                       </NavLink>{" "}
                       <span>
-                <input type="text" placeholder="Søk" ref="searchInput"/>
-                <button
-                    ref="searchButton"
-                    onClick={() => {
-                        if (this.refs.searchInput.value === "") {
-                            alert("Vennligst fyll inn noe for å søke");
-                        } else {
-                            queries.searchQuery(this.refs.searchInput.value).then(result => {
-                                localStorage.setItem("searchResults", JSON.stringify(result));
-<<<<<<< HEAD
-                                history.push("./searchResults/" + this.refs.searchInput.value);
-                                this.forceUpdate();
-=======
+                        <input type="text" placeholder="Søk" ref="searchInput"/>
+                        <button
+                            ref="searchButton"
+                            onClick={() => {
+                                if (this.refs.searchInput.value === "") {
+                                    alert("Vennligst fyll inn noe for å søke");
+                                } else {
+                                    queries.searchQuery(this.refs.searchInput.value).then(result => {
+                                        localStorage.setItem("searchResults", JSON.stringify(result));
 
-                                history.push("/searchResult/" + this.refs.searchInput.value);
->>>>>>> ce39bcffc4310761321dc18965d2bc802ce676fe
-                            });
-                        }
-                    }}
-                >
-                  søk
-                </button>
-              </span>
-                      <button
-                          ref="logoutButton"
-                          onClick={() => {
-                              localStorage.removeItem("loggetInnBruker"); // Delete User-object from browser
-                              history.push("/login");
-                              this.forceUpdate();
-                          }}
-                      >
-                          <NavLink activestyle={{color: "green"}} exact to="/login">
-                              Sign out
-                          </NavLink>
-                      </button>
+                                        history.push("/searchResult/" + this.refs.searchInput.value);
+                                    });
+                                }
+                            }}
+                        >
+                          <Glyphicon glyph="search"/>
+                        </button>
+                      </span>
+                      <NavLink  exact to="/login">
+                          <Button
+                              ref="logoutButton"
+                              onClick={() => {
+                                  localStorage.removeItem("loggetInnBruker"); // Delete User-object from browser
+                                  history.push("/login");
+                                  this.forceUpdate();
+                              }}
+                          >Sign out
+                          </Button>
+                      </NavLink>
                   </div>
               );
           }
       } else {
           return (
-              <div>
-                  <NavLink activestyle={{color: "green"}} to="/login">
-                      Logg inn
+              <div className="menu">
+                  <NavLink to="/login">
+                      <Button>Logg inn</Button>
                   </NavLink>
-                  <NavLink activestyle={{color: "green"}} to="/signup">
-                      Registrer
+                  <NavLink to="/signup">
+                      <Button>Registrer</Button>
                   </NavLink>
               </div>
           );

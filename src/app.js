@@ -7,19 +7,11 @@ import Profile from "./Profile";
 import Menu from "./menu";
 import SearchResult from "./SearchResult";
 import Kalender from "./Kalender";
-import Home from "./Home";
 import Skjema from "./SignUp";
 import AdminSite from "./adminSite";
 import profileUpdate from "./profileUpdate";
 import createEvent from "./createEvent";
 import event from "./event";
-
-// The Route-elements define the different pages of the application
-// through a path and which component should be used for the path.
-// The path can include a variable, for instance
-// path='/customer/:customerId' component={CustomerDetails}
-// means that the path /customer/5 will show the CustomerDetails
-// with props.match.params.customerId set to 5.
 
 ReactDOM.render(
   <HashRouter>
@@ -28,7 +20,6 @@ ReactDOM.render(
       <Switch>
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Skjema} />
-        <Route exact path="/home" component={Home} />
         <Route exact path="/profile/:brukerID" component={Profile} />
         <Route exact path="/searchResult/:searchInput" component={SearchResult} />
         <Route exact path="/kalender" component={Kalender} />

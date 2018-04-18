@@ -3,6 +3,7 @@ import { eventQueries, queries } from "./services";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
 import {eventMaler} from "./rollerOgEventMal.js"
+import {Button, Glypicon} from "react-bootstrap"
 
 class newEvent extends React.Component {
   constructor(props) {
@@ -10,16 +11,20 @@ class newEvent extends React.Component {
   }
 
   render() {
-      let eventList = []
+      let eventList = [];
       for (let x in eventMaler) {
           eventList.push(
               <option key={eventMaler[x].key} value={eventMaler[x].key}>{eventMaler[x].navn}</option>
           )
       }
+
     return (
-      <div>
+      <div className="LoginDiv">
           <table>
               <tbody>
+              <tr>
+                  <h3>Opprett et arrangement:</h3>
+              </tr>
                   <tr>
                       <td><b>Navn:</b></td>
                       <td><input type="text" ref="navnSign" /></td>
@@ -46,29 +51,35 @@ class newEvent extends React.Component {
                   </tr>
               </tbody>
           </table>
-          <button ref="makeEvent">Lag</button>
+          <Button id="makeEvent">Lag</Button>
       </div>
     )
   }
 
   componentDidMount() {
-      // what type of event is made. MAL.
-    this.refs.makeEvent.onclick = () => {
+      let x = document.getElementById("makeEvent")
+    x.onclick = () => {
       let nyttEvent = {
         Navn: this.refs.navnSign.value,
         Lokasjon: this.refs.lokasjonSign.value,
         dato_start: this.refs.datoStartSign.value,
         dato_slutt: this.refs.datoSluttSign.value,
-        annen_info: this.refs.infoSign.value
+        annen_info: this.refs.infoSign.value,
+        eventKey: this.refs.eventKey.value
       };
-      eventQueries.createNewEvent(nyttEvent).then(() => {
-        this.refs.navnSign.value = "";
-        this.refs.lokasjonSign.value = "";
-        this.refs.datoStartSign.value = "";
-        this.refs.datoSluttSign.value = "";
-        this.refs.infoSign.value = "";
-        history.push("/kalender");
-      });
+      if (nyttEvent.Navn === "" || nyttEvent.Lokasjon=== ""|| nyttEvent.dato_slutt=== ""||nyttEvent.dato_start=== ""||nyttEvent.annen_info=== "") {
+          alert("Vennligst fyll inn alt.")
+      }
+      else {
+          eventQueries.createNewEvent(nyttEvent).then(() => {
+              this.refs.navnSign.value = "";
+              this.refs.lokasjonSign.value = "";
+              this.refs.datoStartSign.value = "";
+              this.refs.datoSluttSign.value = "";
+              this.refs.infoSign.value = "";
+              history.push("/kalender");
+          });
+      }
     };
   }
 }

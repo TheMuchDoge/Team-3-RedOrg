@@ -2,6 +2,7 @@ import React from "react";
 import { queries } from "./services";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
+import {Table, Button} from "react-bootstrap"
 
 class profileUpdate extends React.Component {
   constructor(props) {
@@ -14,40 +15,53 @@ class profileUpdate extends React.Component {
 
   render() {
     return (
-      <div>
-        <span>
-          Epost: <input type="text" ref="epostSign" />
-        </span>
-        <br />
-        <span>
-          Etternavn: <input type="text" ref="etternavnSign" />
-        </span>
-        <br />
-        <span>
-          Fornavn: <input type="text" ref="fornavnSign" />
-        </span>
-        <br />
-        <span>
-          Passord: <input type="password" ref="passordSign" />
-        </span>
-        <br />
-        <span>
-          Adresse: <input type="text" ref="adresseSign" />
-        </span>
-        <br />
-        <span>
-          Postnummer: <input type="text" ref="postnrSign" />
-        </span>
-        <br />
-        <span>
-          Poststed: <input type="text" ref="poststedSign" />
-        </span>
-        <br />
-        <span>
-          Telefon: <input type="text" ref="telefonSign" />
-        </span>
-        <br />
-        <button ref="saveInfo">Endre</button>
+      <div className="LoginDiv">
+          <h3>Endring av {this.bruker.fornavn} {this.bruker.etternavn}</h3>
+          <table>
+              <tbody>
+
+                <tr>
+                    <td><b>Epost:</b></td>
+                    <td><input type="text" ref="epostSign" /></td>
+                </tr>
+
+                <tr>
+                    <td><b>Etternavn: </b></td>
+                    <td><input type="text" ref="etternavnSign" /></td>
+                </tr>
+
+                <tr>
+                    <td><b>Fornavn:</b> </td>
+                    <td><input type="text" ref="fornavnSign" /></td>
+                </tr>
+
+                <tr>
+                    <td><b>Passord:</b></td>
+                    <td><input type="password" ref="passordSign" /></td>
+                </tr>
+
+                <tr>
+                    <td><b>Adresse:</b></td>
+                    <td><input type="text" ref="adresseSign" /></td>
+                </tr>
+
+                <tr>
+                    <td><b>Postnummer: </b></td>
+                    <td><input type="text" ref="postnrSign" /></td>
+                </tr>
+
+                <tr>
+                    <td><b>Poststed:</b> </td>
+                    <td><input type="text" ref="poststedSign" /></td>
+                </tr>
+
+                <tr>
+                    <td><b>Telefon:</b> </td>
+                    <td><input type="text" ref="telefonSign" /></td>
+                </tr>
+              </tbody>
+          </table>
+          <Button bsStyle="info" id="saveInfo">Endre</Button>
       </div>
     );
   }
@@ -67,7 +81,9 @@ class profileUpdate extends React.Component {
       this.refs.telefonSign.value = result[0].tlf;
     });
 
-    this.refs.saveInfo.onclick = () => {
+        let saveInfo = document.getElementById("saveInfo");
+    saveInfo.onclick = () => {
+
       let newInfo = {
         epost: this.refs.epostSign.value,
         etternavn: this.refs.etternavnSign.value,
@@ -77,16 +93,16 @@ class profileUpdate extends React.Component {
         postNr: this.refs.postnrSign.value,
         postSted: this.refs.poststedSign.value,
         tlf: this.refs.telefonSign.value,
-        id: this.id
+        brukerID: this.id,
+          adminStat: this.bruker.adminStat
       };
       queries.updateQuery(newInfo).then(() => {
-          let brukerLoggetInn = queries.brukerLoggetInn();
+          let brukerLoggetInn = JSON.parse(localStorage.getItem("loggetInnBruker"))
           if(brukerLoggetInn.brukerID === this.bruker.brukerID) {
               localStorage.removeItem('loggetInnBruker');
               localStorage.setItem("loggetInnBruker", JSON.stringify(newInfo));
-              console.log('This user is schanger')
           }
-          history.push("/home");
+          history.push("/profile/"+this.bruker.brukerID);
             this.forceUpdate();
       });
     };

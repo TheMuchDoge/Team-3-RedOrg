@@ -150,24 +150,55 @@ class Queries {
 
   updateQuery(object) {
     return new Promise((resolve, reject) => {
-      connection.query(
-        "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=? WHERE brukerID=?",
-        [object.etternavn, object.fornavn, object.epost, object.passord, object.telefon, object.adresse, object.id],
-        (error, result) => {
-          if (error) {
-            reject(error);
-            return;
-          }
+        connection.query("SELECT * FROM postkode WHERE postSted = ? AND postNr = ?", [object.postSted, object.postNr], (error, result) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            if (result.length === 1){
+                let newOldAddress = result[0].postkodeID;
+                connection.query(
+                    "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=?, postkodeID=? WHERE brukerID=?",
+                    [object.etternavn, object.fornavn, object.epost, object.passord, object.tlf, object.adresse, newOldAddress,  object.brukerID],
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        resolve(result);
+                    }
+                );
 
-          resolve(result);
-        }
-      );
+            }
+            else{
+                connection.query("INSERT INTO postkode (postSted, postNr) VALUES (?,?);", [object.postSted, object.postNr], (error, result) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        // Make user with new postkode.
+                        let nyAdresseID = result.insertId;
+                        connection.query(
+                            "UPDATE bruker SET etternavn=?, fornavn=?, epost=?, passord=?, tlf=?, adresse=?, postkodeID=? WHERE brukerID=?",
+                            [object.etternavn, object.fornavn, object.epost, object.passord, object.telefon, object.adresse, nyAdresseID, object.brukerID],
+                            (error, result) => {
+                                if (error) {
+                                    reject(error);
+                                    return;
+                                }
+                                resolve(result);
+                            }
+                        );
+                    }
+                })
+            }
+        })
+
     });
   }
 
   hentBruker(id) {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker b, postkode p WHERE b.brukerID = ? AND b.postkodeID = p.postkodeID", [id, id], (error, result) => {
+      connection.query("SELECT * FROM bruker b, postkode p WHERE b.brukerID = ? AND b.postkodeID = p.postkodeID", [id], (error, result) => {
         if (error) {
           reject(error);
           return;
@@ -216,7 +247,7 @@ class Queries {
                   reject(error);
                   return;
               }
-              resolve();
+              resolve(result);
           })
       })
     }
@@ -258,8 +289,14 @@ class EventQueries {
                     reject(error);
                     return;
                 }
-                result[0].eventDatoStart = result[0].eventDatoStart.toDateString();
-                result[0].eventDatoSlutt = result[0].eventDatoSlutt.toDateString();
+                let v = new Date();
+                v = v.getDate() +"."+ (v.getMonth()+1)+"."+v.getFullYear();
+                result.forEach((x) => {
+                    if (x > v) {
+                        x.eventDatoSlutt = x.eventDatoSlutt.getDate() +"."+ (x.eventDatoSlutt.getMonth()+1)+"."+x.eventDatoSlutt.getFullYear();
+                        x.eventDatoStart = x.eventDatoStart.getDate() +"."+ (x.eventDatoStart.getMonth()+1)+"."+x.eventDatoStart.getFullYear();
+                    }
+                })
                 resolve(result);
             });
         });
@@ -272,14 +309,14 @@ class EventQueries {
           reject(error);
           return;
         }
-        for (let x of result) {
-            let v = new Date();
-            if(x.eventDatoStart <= v) {
-                result.splice(result.indexOf(x), 1)
+        let v = new Date();
+        v = v.getDate() +"."+ (v.getMonth()+1)+"."+v.getFullYear();
+        result.forEach((x) => {
+            if (x > v) {
+                x.eventDatoSlutt = x.eventDatoSlutt.getDate() +"."+ (x.eventDatoSlutt.getMonth()+1)+"."+x.eventDatoSlutt.getFullYear();
+                x.eventDatoStart = x.eventDatoStart.getDate() +"."+ (x.eventDatoStart.getMonth()+1)+"."+x.eventDatoStart.getFullYear();
             }
-            x.eventDatoStart = x.eventDatoStart.toDateString();
-            x.eventDatoSlutt = x.eventDatoSlutt.toDateString();
-        }
+        })
         resolve(result);
       });
     });
@@ -292,6 +329,15 @@ class EventQueries {
           reject(error);
           return;
         }
+        let v = new Date();
+        v = v.getDate() +"."+ (v.getMonth()+1)+"."+v.getFullYear();
+        result.forEach((x) => {
+            if (x > v) {
+                x.eventDatoSlutt = x.eventDatoSlutt.getDate() +"."+ (x.eventDatoSlutt.getMonth()+1)+"."+x.eventDatoSlutt.getFullYear();
+                x.eventDatoStart = x.eventDatoStart.getDate() +"."+ (x.eventDatoStart.getMonth()+1)+"."+x.eventDatoStart.getFullYear();
+            }
+        })
+
         resolve(result);
       });
     });
@@ -300,8 +346,8 @@ class EventQueries {
   createNewEvent(object) {
     return new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO events (eventNavn, eventPlass, eventDatoStart, eventDatoSlutt, informasjon) VAlUES (?,?,?,?,?)",
-        [object.Navn, object.Lokasjon, object.dato_start, object.dato_slutt, object.annen_info],
+        "INSERT INTO events (eventNavn, eventPlass, eventDatoStart, eventDatoSlutt, informasjon, eventKey) VAlUES (?,?,?,?,?,?)",
+        [object.Navn, object.Lokasjon, object.dato_start, object.dato_slutt, object.annen_info, object.eventKey],
         (error, result) => {
           if (error) {
             reject(error);
@@ -313,30 +359,31 @@ class EventQueries {
     });
   }
 
-      godkjenning(ID, table, bool) {
+  godkjenning(ID, table, bool) {
         return new Promise((resolve, reject) => {
           // If bool (which stands for add or not, where true is add, then do if
-          if (bool) {
+            if (bool) {
             //If the table is event then do this
-              if (table === event) {
-                  connection.query("UPDATE event SET godkjent = 1 WHERE eventID = ?", [table, ID], (error, result) => {
-                      if (error) {
-                          reject(error);
-                          return;
-                      }
-                      resolve();
-                  });
-              }
-              else{
-                  connection.query("UPDATE bruker SET godkjent = 1 WHERE brukerID = ?", [table, ID], (error, result) => {
-                      if (error) {
-                          reject(error);
-                          return;
-                      }
-                      resolve();
-                  });
-              }
-          } else {
+                if (table === event) {
+                    connection.query("UPDATE events SET godkjent = 1 WHERE eventID = ?", [ID], (error, result) => {
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        resolve();
+                    });
+                }
+                else{
+                    connection.query("UPDATE bruker SET godkjent = 1 WHERE brukerID = ?", [ID], (error, result) => {
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        resolve();
+                    });
+                }
+          }
+          else {
               if(table === event) {
                   connection.query("DELETE FROM events WHERE eventID= ?", [ID], (error, result) => {
                       if (error) {
@@ -344,8 +391,9 @@ class EventQueries {
                           return;
                       }
                       resolve();
-              })
-            }else {
+                  })
+              }
+              else {
                   connection.query("INSERT INTO ikkeBruker (brukerID, epost, fornavn, etternavn, passord, adresse, tlf, godkjent, adminStat, poeng) " +
                       "SELECT brukerID, epost, fornavn, etternavn, passord, adresse, tlf, godkjent, adminStat, poeng FROM bruker  WHERE brukerID = ?", [ID], (error, result) => {
                       if (error) {
@@ -366,9 +414,16 @@ class EventQueries {
       }
 
 
-  joinEvent(eventID, brukerID, kvali) {
+  joinEvent(eventID, brukerID, rolle) {
         return new Promise ((resolve, reject) => {
-            connection.query("INSERT INTO deltakelse (brukerID, eventID, deltarSom,  mottatPoeng) VALUES (?,?,?,1)", [brukerID, eventID,kvali], (error, result) => {
+            this.hentDeltakere(eventID).then((result) => {
+                result.forEach((x) => {
+                    if(x.brukerID === brukerID) {
+                        reject();
+                    }
+                })
+            })
+            connection.query("INSERT INTO deltakelse (brukerID, eventID, deltarSom,  mottatPoeng) VALUES (?,?,?,1) ", [brukerID, eventID, rolle], (error, result) => {
                 if (error) {
                     reject(error);
                     return;
@@ -378,9 +433,9 @@ class EventQueries {
         })
   }
 
-    hentDeltakere(eventID) {
+  hentDeltakere(eventID) {
         return new Promise ((resolve, reject) => {
-            connection.query("SELECT * FROM bruker b, deltakelse d WHERE d.eventID = ? AND d.brukerID = b.brukerID", [eventID], (error, result) =>  {
+            connection.query("SELECT * FROM deltakelse d, bruker b WHERE d.eventID = ? AND b.brukerID = d.brukerID", [eventID], (error, result) =>  {
                 if (error) {
                     reject(error);
                     return;
