@@ -75,12 +75,8 @@ class Menu extends React.Component {
                       <NavLink  to="/kalender">
                           <Button>Kalender</Button>
                       </NavLink>{" "}
-<<<<<<< HEAD
-                      <NavLink activeStyle={{color: "green"}} to="/profile">
-=======
-                      <NavLink activeStyle={{color: "green"}} to={"/profile/" + brukerLoggetInn.brukerID}>
->>>>>>> ce39bcffc4310761321dc18965d2bc802ce676fe
-                          Profile
+                      <NavLink  to={"/profile/" + brukerLoggetInn.brukerID}>
+                          <Button>Profile</Button>
                       </NavLink>{" "}
                       <span>
                         <input type="text" placeholder="Søk" ref="searchInput"/>
