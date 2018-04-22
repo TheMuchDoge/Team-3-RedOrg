@@ -2,6 +2,7 @@ import React from "react";
 import { eventQueries, queries } from "./services";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
+// Henter external fil som har maler for events og roller.
 import {eventMaler} from "./rollerOgEventMal.js"
 import {Button, Glypicon} from "react-bootstrap"
 
@@ -11,6 +12,7 @@ class newEvent extends React.Component {
   }
 
   render() {
+      // For hver av elementene i eventmal så skriver det ut valget for å velge det som eventtype.
       let eventList = [];
       for (let x in eventMaler) {
           eventList.push(
@@ -18,6 +20,7 @@ class newEvent extends React.Component {
           )
       }
 
+      // Enkel sing inn inputs, bruker ref for å hente verdier.
     return (
       <div className="LoginDiv">
           <table>
@@ -57,7 +60,11 @@ class newEvent extends React.Component {
   }
 
   componentDidMount() {
-      let x = document.getElementById("makeEvent")
+      // Henter knappen, siden vi bruker Bootstrap så fungere ikke ref på de elementene.
+      let x = document.getElementById("makeEvent");
+
+      // Lager et object for enkelere henting av data i spørringen.
+      // Og enkel validasjon som bare sjekker om alt er fylt ut. og tilslutt sender det til databasen og pusher brukeren til Kalender.
     x.onclick = () => {
       let nyttEvent = {
         Navn: this.refs.navnSign.value,

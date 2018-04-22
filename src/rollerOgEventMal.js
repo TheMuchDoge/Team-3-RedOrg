@@ -1,3 +1,6 @@
+// Dette er dokumentet som har arrayene til rollene )opg hva som kreves for hver rolle,
+// og eventmalene. Laget et eget dokument for dette fordi da behøver man ikke å endre hard kode, men bare filen her.
+
 let roller = [
         {
             key:"Sanitet",

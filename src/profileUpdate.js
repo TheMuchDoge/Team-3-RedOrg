@@ -8,7 +8,9 @@ class profileUpdate extends React.Component {
   constructor(props) {
     super(props);
 
+    // Henter id til brukern vi skal redigere.
     this.id = props.match.params.brukerID;
+    // Brukeren som skal bli redigert.
     this.bruker = {};
 
   }
@@ -59,6 +61,13 @@ class profileUpdate extends React.Component {
                     <td><b>Telefon:</b> </td>
                     <td><input type="text" ref="telefonSign" /></td>
                 </tr>
+                <tr ref="adminRed">
+                    <td><b>Admin Status:</b></td>
+                    <td><select ref="adminStat">
+                        <option value="0">Nei</option>
+                        <option value="1">Ja</option>
+                    </select></td>
+                </tr>
               </tbody>
           </table>
           <Button bsStyle="info" id="saveInfo">Endre</Button>
@@ -67,9 +76,18 @@ class profileUpdate extends React.Component {
   }
 
   componentDidMount() {
+
+    // Henter brukern info og setter det inn i inputs.
     queries.hentBruker(this.id).then(result => {
       this.bruker = result[0];
       this.forceUpdate();
+
+      if(this.bruker.adminStat) {
+          this.refs.adminRed.style.display = "table-row";
+      }
+      else {
+          this.refs.adminRed.style.display = "none";
+      }
 
       this.refs.epostSign.value = result[0].epost;
       this.refs.etternavnSign.value = result[0].etternavn;
@@ -79,32 +97,38 @@ class profileUpdate extends React.Component {
       this.refs.postnrSign.value = result[0].postNr;
       this.refs.poststedSign.value = result[0].postSted;
       this.refs.telefonSign.value = result[0].tlf;
+      this.refs.adminStat.value = result[0].adminStat;
     });
 
-        let saveInfo = document.getElementById("saveInfo");
+    // pågrunn av bs Style må vi hente knappen på den gamle måten.
+    let saveInfo = document.getElementById("saveInfo");
     saveInfo.onclick = () => {
+        // lager en object for enkelrer henting av informasjon i querien.
+        let newInfo = {
+            epost: this.refs.epostSign.value,
+            etternavn: this.refs.etternavnSign.value,
+            fornavn: this.refs.fornavnSign.value,
+            passord: this.refs.passordSign.value,
+            adresse: this.refs.adresseSign.value,
+            postNr: this.refs.postnrSign.value,
+            postSted: this.refs.poststedSign.value,
+            tlf: this.refs.telefonSign.value,
+            brukerID: this.id,
+            adminStat: this.refs.adminStat.value
+        };
 
-      let newInfo = {
-        epost: this.refs.epostSign.value,
-        etternavn: this.refs.etternavnSign.value,
-        fornavn: this.refs.fornavnSign.value,
-        passord: this.refs.passordSign.value,
-        adresse: this.refs.adresseSign.value,
-        postNr: this.refs.postnrSign.value,
-        postSted: this.refs.poststedSign.value,
-        tlf: this.refs.telefonSign.value,
-        brukerID: this.id,
-          adminStat: this.bruker.adminStat
-      };
-      queries.updateQuery(newInfo).then(() => {
-          let brukerLoggetInn = JSON.parse(localStorage.getItem("loggetInnBruker"))
-          if(brukerLoggetInn.brukerID === this.bruker.brukerID) {
-              localStorage.removeItem('loggetInnBruker');
-              localStorage.setItem("loggetInnBruker", JSON.stringify(newInfo));
-          }
-          history.push("/profile/"+this.bruker.brukerID);
+
+        // Selve querien og sjekker om brukeren er den som er logget inn, hvis det er sånn så endrer vi localStorage.
+        // Ellers så pushe vi til profile til personen vi oppdaterte.
+        queries.updateQuery(newInfo).then(() => {
+            let brukerLoggetInn = JSON.parse(localStorage.getItem("loggetInnBruker"))
+            if(brukerLoggetInn.brukerID === this.bruker.brukerID) {
+                localStorage.removeItem('loggetInnBruker');
+                localStorage.setItem("loggetInnBruker", JSON.stringify(newInfo));
+            }
+            history.push("/profile/"+this.bruker.brukerID);
             this.forceUpdate();
-      });
+        });
     };
   }
 }

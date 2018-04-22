@@ -6,12 +6,16 @@ import { NavLink } from "react-router-dom";
 class EventGodkjenning extends React.Component {
     constructor (props) {
         super(props);
+        // Lagerer alle eventene hentet fra db query i componentDidMount
         this.events = [];
     }
 
     render() {
+        // Array for å lagre alle eventene
     let arrayEvents = [];
         for (let i of this.events) {
+            // Pushe en tabel row per event.
+            // To knapper, en for å slette og en for å legge til.
             arrayEvents.push(
                 <tr key={i.eventID}>
                     <td>
@@ -39,6 +43,7 @@ class EventGodkjenning extends React.Component {
             )
         }
 
+        // Returner arrayen i form av en table.
         return (
             <div>
                 <h1>Event godkjenning:</h1>
@@ -52,6 +57,7 @@ class EventGodkjenning extends React.Component {
     }
 
     componentDidMount() {
+        // Henter ikke godkjenteEvents.
         eventQueries.hentIkkeGodkjentEvents().then((result) => {
             this.events = result;
             this.forceUpdate();

@@ -1,5 +1,5 @@
 import React from "react";
-import Menu from "./menu";
+import { NavLink } from "react-router-dom";
 import { queries } from "./services";
 import {Button} from "react-bootstrap"
 import createHashHistory from "history/createHashHistory";
@@ -26,6 +26,7 @@ class Login extends React.Component {
               </tbody>
           </table>
           <Button bsStyle="info" id="loginBtn">Login</Button>
+          <NavLink exact to="/glemtPassord">Glemt passord?</NavLink>
       </div>
 
 
@@ -33,10 +34,12 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-      var btn = document.getElementById("loginBtn")
+      // grunnet bs Style så må vi hente btn
+      let btn = document.getElementById("loginBtn");
     btn.onclick = () => {
-      queries.loginQuery(this.refs.epost.value  , this.refs.passord.value).then(() => {
-        history.push("/home");
+          // Login query, og sender brukern til profile.
+      queries.loginQuery(this.refs.epost.value  , this.refs.passord.value).then((id) => {
+        history.push("/profile/"+id);
       });
       this.refs.epost.value = "";
       this.refs.passord.value = "";

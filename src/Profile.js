@@ -1,6 +1,6 @@
 import React from "react";
 import {NavLink} from 'react-router-dom';
-import {queries} from "./services";
+import {eventQueries, queries} from "./services";
 import createHashHistory from "history/createHashHistory";
 const history = createHashHistory();
 import {Button, Glyphicon, Table, Grid, Row, Col,ListGroup, ListGroupItem} from "react-bootstrap";
@@ -9,24 +9,34 @@ class Profile extends React.Component  {
     constructor(props) {
         super(props);
 
+        // Henter id fra navlinken sopm brukeren trukket på.
         this.id = props.match.params.brukerID;
+        // Et tomt object for å lagre bruker som skal vises
         this.bruker = {};
+        // Tom array for kvalifikasjoner
         this.kvali = [];
+        this.kvaliList = [];
+        // Tom array for mulig roller til personen
         this.rolle = [];
+        this.rolleList = [];
+        this.loggetBruker = JSON.parse(localStorage.getItem("loggetInnBruker"));
     }
-    render () {
-        let brukerOne = JSON.parse(localStorage.getItem("loggetInnBruker"))
-        let kvaliList = [];
-        let rolleList = [];
-        if (this.bruker) {
 
+    kvaliFunc() {
+        return new Promise((resolve, reject) => {
+            // Itterer gjennom this.kvali og hvis det enten er brukeren som er logget inn på sin profile eller adminen som ser på en hvilken som helst side så
+            // legger koden til en remove knapp
+            this.kvaliList = [];
             for (let kvali of this.kvali) {
-                if(brukerOne.adminStat || brukerOne.brukerID === this.bruker.brukerID) {
-                    kvaliList.push(
+                if(this.loggetBruker.adminStat || this.loggetBruker.brukerID === this.bruker.brukerID) {
+                    this.kvaliList.push(
                         <ListGroupItem key={kvali.kvaliID}>
                             <b>{kvali.kvaliType}</b>
                             <Button onClick={() => {
-                                queries.removeKvali(kvali.kvaliID)
+                                queries.removeKvali(kvali.kvaliID).then(() => {
+                                    this.kvaliList = [];
+                                    this.hentAlt();
+                                })
                             }}><Glyphicon glyph="remove"/>
                             </Button>
                             <p>t.o.m.: {kvali.utlopsDato}</p>
@@ -34,7 +44,7 @@ class Profile extends React.Component  {
                     )
                 }
                 else {
-                    kvaliList.push(
+                    this.kvaliList.push(
                         <ListGroupItem key={kvali.kvaliID}>
                             <b>{kvali.kvaliType}</b>
                             <p>t.o.m.: {kvali.utlopsDato}</p>
@@ -42,27 +52,54 @@ class Profile extends React.Component  {
                     )
                 }
             }
+            resolve();
+        });
+    }
 
-
+    rolleFunc() {
+        return new Promise ((resolve, reject) => {
+            this.rolleList = [];
             for (let rolle of this.rolle) {
-                rolleList.push(
+                this.rolleList.push(
                     <ListGroupItem key={rolle}>{rolle}</ListGroupItem>
                 )
             }
-        }
-        if(brukerOne) {
-            if (brukerOne.adminStat || brukerOne.brukerID === this.bruker.brukerID) {
+            resolve();
+        })
+
+    }
+
+    render () {
+        // henter brukeren som er logget inn.b
+        // Listen av kvali og roller
+
+        // Hvis det er brukeren som er logget inn som er på profile eller brukern har adminStat så legger den til en rediger knapp som sender en bruker videre til profileUpdate.js
+        if(this.loggetBruker) {
+            if (this.loggetBruker.adminStat || this.loggetBruker.brukerID === this.bruker.brukerID) {
                 return (
                     <div>
                         <Grid>
                             <Row>
-                                <Col xs={8}>
+                                <Col xs={6}>
                                     <h1>{this.bruker.fornavn} {this.bruker.etternavn}</h1>
                                 </Col>
-                                <Col xs={2}>
+                                <Col xs={6}>
                                     <NavLink
                                         to={'/profileUpdate/' + this.bruker.brukerID}><Button style={{marginTop: 25 + "px"}}>Rediger <Glyphicon
-                                        glyph="pencil"/></Button></NavLink>{' '}
+                                        glyph="pencil"/></Button></NavLink>{' '}<Button bsStyle="danger" id="slettEvent" style={{marginTop: 25 + "px"}} onClick={() => {
+                                            if (this.id == this.loggetBruker.brukerID) {
+                                                eventQueries.godkjenning(this.id, "bruker", false).then(() => {
+                                                    localStorage.removeItem("loggetInnBruker");
+                                                    history.push("/login");
+                                                })
+                                            }
+                                            else {
+                                                eventQueries.godkjenning(this.id,"bruker", false).then(() => {
+                                                    history.back();
+                                                })
+                                            }
+                                }}><Glyphicon
+                                    glyph="remove"/>Slett</Button>
                                 </Col>
                             </Row>
                             <Row>
@@ -90,11 +127,11 @@ class Profile extends React.Component  {
                                     </tr>
                                     <tr>
                                         <td><b>Roller:</b></td>
-                                        <td>{rolleList}</td>
+                                        <td>{this.rolleList}</td>
                                     </tr>
                                     <tr>
                                         <td><b>Kvalifikasjoner:</b></td>
-                                        <td>{kvaliList}</td>
+                                        <td>{this.kvaliList}</td>
                                     </tr>
                                     </tbody>
                                 </Table>
@@ -152,8 +189,18 @@ class Profile extends React.Component  {
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><Button bsStyle="info" id="addBtn">Send til databasen <Glyphicon
-                                        glyph="chevron-right"></Glyphicon> </Button></td>
+                                    <td><Button bsStyle="info" onClick={() => {
+                                            // Enkel validasjon og query for å legge til en kvalifikasjon.
+                                            if (this.refs.kvali.value === "" || this.refs.nyKvaliDato.value === "") {
+                                                alert("Vennligst fyll inn både dato og hvilken kvalifikasjons type du har.")
+                                            }
+                                            else {
+                                                queries.sendKvali(this.id, this.refs.kvali.value, this.refs.nyKvaliDato.value).then(() => {
+                                                    this.hentAlt();
+                                                });
+                                            }
+                                    }}>Send til databasen <Glyphicon
+                                        glyph="chevron-right" /></Button></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -162,6 +209,7 @@ class Profile extends React.Component  {
                 )
             }
             else {
+                // Ellers så returne koden en vanlig bruker info side uten mulighet for redigering.
                 return (
                     <div>
                         <h1>{this.bruker.fornavn} {this.bruker.etternavn}</h1>
@@ -189,11 +237,11 @@ class Profile extends React.Component  {
                             </tr>
                             <tr>
                                 <td><b>Roller:</b></td>
-                                <td>{rolleList}</td>
+                                <td>{this.rolleList}</td>
                             </tr>
                             <tr>
                                 <td><b>Kvalifikasjoner:</b></td>
-                                <td>{kvaliList}</td>
+                                <td>{this.kvaliList}</td>
                             </tr>
 
                             </tbody>
@@ -205,35 +253,24 @@ class Profile extends React.Component  {
         }
     }
 
-    componentDidMount() {
-        let addBtn = document.getElementById("addBtn")
-        if(addBtn) {
-            addBtn.onclick = () => {
-                if (this.refs.kvali.value === "" || this.refs.nyKvaliDato.value === "") {
-                    alert("Vennligst fyll inn både dato og hvilken kvalifikasjons type du har.")
-                }
-                queries.sendKvali(this.id, this.refs.kvali.value, this.refs.nyKvaliDato.value).then(() => {
-                    this.forceUpdate();
-                });
-            };
-        }
-
-
-        queries.hentBruker(this.id).then((result) => {
-            this.bruker = result[0];
-            queries.hentKvali(this.id).then((result) => {
-                this.kvali = result;
-                queries.hentRolle(this.id).then((result) => {
-                    this.rolle = result;
-                    this.forceUpdate();
-                });
+    hentAlt () {
+        queries.hentKvali(this.id).then((result) => {
+            this.kvali = result;
+            this.kvaliFunc();
+            queries.hentRolle(this.id).then((result) => {
+                this.rolle = result;
+                this.rolleFunc();
+                this.forceUpdate();
             });
         });
+    }
 
-
-
-
-
+    componentDidMount() {
+        // Først så henter vi brukern, så henter vi kvalifikasjoner til brukern også rollene brukern kan ha.
+        queries.hentBruker(this.id).then((result) => {
+            this.bruker = result[0];
+            this.hentAlt();
+        });
     }
 
 }

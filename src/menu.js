@@ -8,30 +8,33 @@ import {Button, Glyphicon} from "react-bootstrap";
 class Menu extends React.Component {
   constructor(props) {
     super(props);
-    this.activeStyle ={
-        bsStyle:"success"
-    }
   }
 
   render() {
+      // Henter brukeren som er logget inn.
       let brukerLoggetInn = queries.brukerLoggetInn();
 
+      // Hvis brukeren er logget inn så ska denne menu-en vises.
       if (brukerLoggetInn) {
+          // Og hvis brukeren har adminStat så få den tilgang til en admin side (godkjenning).
           if (brukerLoggetInn.adminStat) {
+              // Returner Navlink til hver av de komponentene.
+              // Første <span> er for søke funksjonen. Den sender en query til db-en og lagrer det i localStorage
+              // og sender brukeren videre til searchResults.
               return (
                   <div className="menu">
                       <Button onClick={ () => {
                           window.history.back();
                           this.forceUpdate();
-                      }}><Glyphicon glyph="arrow-left"/></Button>
+                      }}><Glyphicon glyph="arrow-left" style={{color:"#dd3636"}}/></Button>
                       <NavLink  to="/kalender">
-                          <Button>Kalender</Button>
+                          <Button><Glyphicon glyph="calendar" style={{color:"#dd3636"}}/> Kalender</Button>
                       </NavLink>{" "}
                       <NavLink  to={"/profile/" + brukerLoggetInn.brukerID}>
-                          <Button>Profile</Button>
+                          <Button><Glyphicon glyph="user" style={{color:"#dd3636"}}/> Profil</Button>
                       </NavLink>{" "}
                       <NavLink to="/adminsite">
-                          <Button>Admin Stuff</Button>
+                          <Button>Admin Side</Button>
                       </NavLink>{" "}
                       <span>
                         <input type="text" placeholder="Søk" ref="searchInput"/>
@@ -49,7 +52,7 @@ class Menu extends React.Component {
                                 }
                             }}
                         >
-                          <Glyphicon glyph="search"/>
+                          <Glyphicon glyph="search" style={{color:"red"}}/>
                         </Button>
                       </span>
                       <NavLink  exact to="/login">
@@ -60,23 +63,25 @@ class Menu extends React.Component {
                                   history.push("/login");
                                   this.forceUpdate();
                               }}
-                          >Sign out
+                          ><Glyphicon glyph="log-out" style={{color:"#dd3636"}}/> Sign out
                           </Button>
                       </NavLink>
                   </div>
               );
           } else {
+              // Menu hvis brukeren er logget inn, men IKKE adminStat.
+              // Samme som forrige menu, bare uten "Admin stuff" siden.
               return (
                   <div className="menu">
                       <Button onClick={ () => {
                           window.history.back();
                           this.forceUpdate();
-                      }}><Glyphicon glyph="arrow-left"/></Button>
+                      }}><Glyphicon glyph="arrow-left" style={{color:"#dd3636"}}/></Button>
                       <NavLink  to="/kalender">
-                          <Button>Kalender</Button>
+                          <Button><Glyphicon glyph="calendar" style={{color:"#dd3636"}}/> Kalender</Button>
                       </NavLink>{" "}
                       <NavLink  to={"/profile/" + brukerLoggetInn.brukerID}>
-                          <Button>Profile</Button>
+                          <Button><Glyphicon glyph="user" style={{color:"#dd3636"}}/> Profil</Button>
                       </NavLink>{" "}
                       <span>
                         <input type="text" placeholder="Søk" ref="searchInput"/>
@@ -94,7 +99,7 @@ class Menu extends React.Component {
                                 }
                             }}
                         >
-                          <Glyphicon glyph="search"/>
+                          <Glyphicon glyph="search" style={{color:"#dd3636"}}/>
                         </button>
                       </span>
                       <NavLink  exact to="/login">
@@ -105,17 +110,18 @@ class Menu extends React.Component {
                                   history.push("/login");
                                   this.forceUpdate();
                               }}
-                          >Sign out
+                          ><Glyphicon glyph="log-out" style={{color:"#dd3636"}}/> Sign out
                           </Button>
                       </NavLink>
                   </div>
               );
           }
       } else {
+          // Hvis brukeren ikke er logget inn så vis denne logg inn / register menu.
           return (
               <div className="menu">
                   <NavLink to="/login">
-                      <Button>Logg inn</Button>
+                      <Button><Glyphicon glyph="log-in" style={{color:"#dd3636"}}/> Logg inn</Button>
                   </NavLink>
                   <NavLink to="/signup">
                       <Button>Registrer</Button>

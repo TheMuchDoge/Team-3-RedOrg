@@ -6,11 +6,14 @@ import {Button, Glyphicon, Grid, Row, Col, Table} from "react-bootstrap"
 class Kalender extends React.Component {
   constructor(props) {
     super(props);
-
+    // lagrer events som er hentet fra db
     this.events = [];
   }
 
+
+
   render() {
+      // Array med HTML elementer av hver event. En evnet har en navlink som sender brukern videre til event.js
     let eventList = [];
     for (let i of this.events) {
       eventList.push(
@@ -18,7 +21,8 @@ class Kalender extends React.Component {
               <td><NavLink activeStyle={{ color: "green" }} to={"/event/" + i.eventID}>
                   <h3>{i.eventNavn}</h3>
               </NavLink></td>
-              <td style={{paddingTop: 30+"px"}}><b>Lokasjon: </b> {i.eventDatoStart}</td>
+              <td style={{paddingTop: 30+"px"}}><b>Lokasjon: </b> {i.eventPlass}</td>
+              <td style={{paddingTop: 30+"px"}}><b>Dato: </b> {i.eventDatoStart}</td>
           </tr>
       );
     }
@@ -35,7 +39,6 @@ class Kalender extends React.Component {
                      <Button><Glyphicon glyph="plus"/> event</Button>
                   </NavLink>{" "}
                   </Col>
-
               </Row>
               <Row>
                   <Table striped hover>
@@ -50,6 +53,7 @@ class Kalender extends React.Component {
   }
 
   componentDidMount() {
+      // Henter alle events som er godkjent.
     eventQueries.hentEvents().then((results) => {
       this.events = results;
       this.forceUpdate();
