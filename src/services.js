@@ -121,8 +121,8 @@ class Queries {
   searchQuery(input) {
       // selvforklarende, sjekker om den finne noe kjent med de brukere som er godkjent.
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM bruker WHERE godkjent = 1 AND fornavn = ? OR etternavn = ? OR tlf = ? OR adresse = ?  ",
-          ["%" + input + "%", "%" + input + "%", "%" + input + "%", "%" + input + "%"], (error, result) => {
+      connection.query("SELECT * FROM bruker WHERE godkjent = 1 AND fornavn like ? OR etternavn like ? OR tlf like ? OR adresse like ? OR epost like ? ",
+          ["%" + input + "%", "%" + input + "%", "%" + input + "%", "%" + input + "%", "%" + input + "%"], (error, result) => {
         if (error) {
           reject(error);
           return;
@@ -240,7 +240,7 @@ class Queries {
                     return;
                 }
                 result.forEach((x) => {
-                    x.utlopsDato = x.utlopsDato.toISOString().substring(0, 10)
+                    x.utlopsDato = x.utlopsDato.toISOString().substring(0, 10);
                 });
                 resolve(result);
             })
@@ -278,7 +278,7 @@ class Queries {
 
                let kvaliArray = [];
                for (let kvali of result) {
-                   kvaliArray.push(kvali.kvaliType);
+                       kvaliArray.push(kvali.kvaliType);
                }
                // Sjekker om brukeren har kvalifikasjonene til en og hver rolle.
                 for (let rolle of roller) {
@@ -291,6 +291,7 @@ class Queries {
             });
       });
     }
+
     hentPassord(epost) {
       return new Promise((resolve, reject) => {
           connection.query("SELECT passord FROM bruker WHERE epost = ?", [epost], (error, result) => {
@@ -307,6 +308,19 @@ class Queries {
       return new Promise((resolve, reject) => {
 
       })
+    }
+
+    hentDeltakelse(id) {
+        return new Promise ((resolve, reject) => {
+            connection.query("SELECT * FROM deltakelse d, events e  WHERE brukerID =? AND d.eventID = e.eventID", [id], (error, result) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve(result);
+            })
+        })
     }
 
 
@@ -540,10 +554,23 @@ class EventQueries {
                     return;
                 }
                 resolve();
-                }
-            )
+            })
         })
   }
+
+  removeDeltakelse(id) {
+        return new Promise ((resolve, reject) => {
+            connection.query("DELETE FROM deltakelse WHERE brukerID = ?", [id], (error, result) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve();
+            })
+        })
+  }
+
+
 
 }
 

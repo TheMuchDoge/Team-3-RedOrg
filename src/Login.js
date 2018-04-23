@@ -12,24 +12,24 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="LoginDiv">
-          <table>
-              <tbody>
-              <tr>
-                  <td><b>Epost: </b></td>
-                  <td><input type="text" placeholder="Epost" ref="epost" /></td>
-              </tr>
-              <tr>
-                  <td><b>Passord: </b></td>
-                  <td><input type="password" placeholder="Passord" ref="passord" /></td>
-              </tr>
-              </tbody>
-          </table>
-          <Button bsStyle="info" id="loginBtn">Login</Button>
-          <NavLink exact to="/glemtPassord">Glemt passord?</NavLink>
-      </div>
 
-
+          <div className="LoginDiv">
+              <h1 style={{color:"#dd3636"}}>RedOrg</h1>
+              <table>
+                  <tbody>
+                  <tr>
+                      <td><b>Epost: </b></td>
+                      <td><input type="text" placeholder="Epost" ref="epost" /></td>
+                  </tr>
+                  <tr>
+                      <td><b>Passord: </b></td>
+                      <td><input type="password" placeholder="Passord" ref="passord" /></td>
+                  </tr>
+                  </tbody>
+              </table>
+              <Button bsStyle="info" id="loginBtn">Login</Button>
+              <NavLink exact to="/glemtPassord">Glemt passord?</NavLink>
+          </div>
     );
   }
 

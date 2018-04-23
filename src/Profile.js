@@ -20,6 +20,8 @@ class Profile extends React.Component  {
         this.rolle = [];
         this.rolleList = [];
         this.loggetBruker = JSON.parse(localStorage.getItem("loggetInnBruker"));
+        this.deltarpaa = [];
+        this.deltarpaaList = [];
     }
 
     kvaliFunc() {
@@ -70,8 +72,15 @@ class Profile extends React.Component  {
     }
 
     render () {
-        // henter brukeren som er logget inn.b
-        // Listen av kvali og roller
+        if (this.deltarpaa) {
+            this.deltarpaa.forEach((x) => {
+                this.deltarpaaList.push(
+                    <ListGroupItem key={x.eventID + x.brukerID}>
+                       <b>Som</b> {x.deltarSom} <b>på</b> {x.eventNavn}
+                    </ListGroupItem>
+                )
+            })
+        }
 
         // Hvis det er brukeren som er logget inn som er på profile eller brukern har adminStat så legger den til en rediger knapp som sender en bruker videre til profileUpdate.js
         if(this.loggetBruker) {
@@ -88,15 +97,19 @@ class Profile extends React.Component  {
                                         to={'/profileUpdate/' + this.bruker.brukerID}><Button style={{marginTop: 25 + "px"}}>Rediger <Glyphicon
                                         glyph="pencil"/></Button></NavLink>{' '}<Button bsStyle="danger" id="slettEvent" style={{marginTop: 25 + "px"}} onClick={() => {
                                             if (this.id == this.loggetBruker.brukerID) {
-                                                eventQueries.godkjenning(this.id, "bruker", false).then(() => {
-                                                    localStorage.removeItem("loggetInnBruker");
-                                                    history.push("/login");
-                                                })
+                                                let check = confirm("Er du sikker på at du vil slette " + this.bruker.fornavn + " "+ this.bruker.etternavn + "?")
+                                                    eventQueries.godkjenning(this.id, "bruker", false).then(() => {
+                                                        localStorage.removeItem("loggetInnBruker");
+                                                        history.push("/login");
+                                                    })
                                             }
                                             else {
-                                                eventQueries.godkjenning(this.id,"bruker", false).then(() => {
-                                                    history.back();
-                                                })
+                                                let check = confirm("Er du sikker på at du vil slette " + this.bruker.fornavn + " "+ this.bruker.etternavn + "?")
+                                                if (check) {
+                                                    eventQueries.godkjenning(this.id,"bruker", false).then(() => {
+                                                        history.back;
+                                                    })
+                                                }
                                             }
                                 }}><Glyphicon
                                     glyph="remove"/>Slett</Button>
@@ -132,6 +145,10 @@ class Profile extends React.Component  {
                                     <tr>
                                         <td><b>Kvalifikasjoner:</b></td>
                                         <td>{this.kvaliList}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>{this.bruker.fornavn} skal delta på: </b></td>
+                                        <td>{this.deltarpaaList}</td>
                                     </tr>
                                     </tbody>
                                 </Table>
@@ -260,7 +277,10 @@ class Profile extends React.Component  {
             queries.hentRolle(this.id).then((result) => {
                 this.rolle = result;
                 this.rolleFunc();
-                this.forceUpdate();
+                queries.hentDeltakelse(this.id).then((result) => {
+                    this.deltarpaa = result;
+                    this.forceUpdate();
+                });
             });
         });
     }
