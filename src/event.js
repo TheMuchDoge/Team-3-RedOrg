@@ -5,7 +5,6 @@ import createHashHistory from "history/createHashHistory";
 import {roller, eventMaler} from "./rollerOgEventMal.js";
 import {Button, Table,Grid, Col, ListGroup, ListGroupItem, Row, Glyphicon} from "react-bootstrap";
 const history = createHashHistory();
-let Confirm = require("prompt-confirm");
 
 class Profile extends React.Component  {
     constructor(props) {
